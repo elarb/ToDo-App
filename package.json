@@ -1,0 +1,74 @@
+{
+  "name": "todo-app",
+  "version": "1.0.0",
+  "description": "A ToDo Application for Children",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "E Ait Larbi & D Happel",
+  "license": "MIT",
+  "scripts": {
+    "start": "node app.js",
+    "test": "mocha --reporter spec"
+  },
+  "dependencies": {
+    "async": "^2.1.2",
+    "bcrypt-nodejs": "^0.0.3",
+    "body-parser": "^1.15.2",
+    "chalk": "^1.1.3",
+    "cheerio": "^0.22.0",
+    "compression": "^1.6.2",
+    "connect-mongo": "^1.3.2",
+    "dotenv": "^2.0.0",
+    "errorhandler": "^1.4.3",
+    "express": "^4.14.0",
+    "express-flash": "^0.0.2",
+    "express-session": "^1.14.2",
+    "express-status-monitor": "^0.1.5",
+    "express-validator": "^2.21.0",
+    "fast-levenshtein": "^2.0.6",
+    "fbgraph": "^1.3.0",
+    "foreach": "^2.0.5",
+    "knex": "^0.12.6",
+    "lodash": "^4.16.6",
+    "lusca": "^1.4.1",
+    "mongoose": "^4.6.6",
+    "morgan": "^1.7.0",
+    "multer": "^1.2.0",
+    "mysql": "^2.12.0",
+    "node-sass-middleware": "^0.9.8",
+    "nodemailer": "^2.6.4",
+    "passport": "^0.3.2",
+    "passport-facebook": "^2.1.1",
+    "passport-google-oauth": "^1.0.0",
+    "passport-local": "^1.0.0",
+    "passport-twitter": "^1.0.4",
+    "pug": "^2.0.0-beta6",
+    "request": "^2.78.0",
+    "validator": "^6.1.0",
+    "zxcvbn": "latest"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "eslint": "^3.9.1",
+    "eslint-config-airbnb-base": "^10.0.0",
+    "eslint-plugin-import": "^2.1.0",
+    "mocha": "^3.1.2",
+    "sinon": "^1.17.6",
+    "sinon-mongoose": "^1.3.0",
+    "supertest": "^2.0.1"
+  },
+  "eslintConfig": {
+    "extends": "airbnb-base",
+    "rules": {
+      "comma-dangle": 0,
+      "consistent-return": 0,
+      "no-param-reassign": 0,
+      "no-underscore-dangle": 0,
+      "no-shadow": 0,
+      "no-console": 0,
+      "no-plusplus": 0
+    }
+  }
+}
