@@ -41,7 +41,18 @@ block content
                             button.btn.btn-success(type='submit')
                                 i.fa.fa-pencil
                                 | Update Profile
-
+        .panel
+            .panel-body
+                form.form-horizontal(method='POST', action='/account/reset/picture')
+                    legend Reset Picture
+                    input(type='hidden', name='_csrf', value=_csrf)
+                    .form-group
+                        p.col-sm-offset-3.col-sm-9 Reset your picture to your gravatar.
+                        input(type='hidden', name='_csrf', value=_csrf)
+                        .col-sm-offset-3.col-sm-9
+                            button.btn.btn-success(type='submit')
+                                i.fa.fa-lock
+                                | Reset Picture
         .panel
             .panel-body
                 form.form-horizontal(method='POST', action='/account/password')
@@ -61,16 +72,6 @@ block content
                                 i.fa.fa-lock
                                 | Change Password
 
-
-        .panel
-            .panel-body
-                form.form-horizontal(method='POST', action='/account/reset/picture')
-                    legend Reset Picture
-                    input(type='hidden', name='_csrf', value=_csrf)
-                    .form-group
-                        button.btn.btn-success(type='submit')
-                            i.fa.fa-lock
-                            | Reset Picture
         .panel
             .panel-body
                 .form-horizontal
