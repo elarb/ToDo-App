@@ -171,7 +171,7 @@ exports.postUpdateProfile = (req, res, next) => {
         name: req.body.name,
         gender: req.body.gender,
         country: req.body.country,
-        city: req.body.city
+        region: req.body.region
     }, {patch: true});
 
     user.fetch().then(function (user) {
@@ -218,6 +218,20 @@ exports.postUpdatePassword = (req, res, next) => {
     user.fetch().then(function (user) {
         req.flash('success', {msg: 'Your password has been changed.'});
 
+        res.redirect('/account');
+    });
+};
+
+//Reset Picture
+exports.postResetPicture = (req, res, next) => {
+    const user = new User({id: req.user.id});
+
+    user.save({
+        picture: null
+    }, {patch: true});
+
+    user.fetch().then(function (user) {
+        req.flash('success', {msg: 'Your picture has been reset to your gravatar.'});
         res.redirect('/account');
     });
 };
