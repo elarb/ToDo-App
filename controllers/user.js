@@ -303,7 +303,7 @@ exports.postReset = (req, res, next) => {
         if (warningMsg !== '') {
             req.flash('errors', {msg: 'Password not accepted: ' + warningMsg});
         } else {
-            req.flash('errors', {msg: 'Password not accepted. Please provide a stronger password'});
+            req.flash('errors', {msg: 'Password is not accepted. Please provide a stronger password'});
         }
         if (suggestionMsg !== '') {
             req.flash('info', {msg: 'Suggestion: ' + suggestionMsg});
