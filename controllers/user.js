@@ -6,6 +6,17 @@ const User = require('../models/User');
 const zxcvbn = require('zxcvbn');
 
 /**
+ * Login Required middleware.
+ */
+exports.isAuthenticated = (req, res, next) => {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    req.flash('errors', {msg: 'Login Required to access that.'});
+    res.redirect('/login');
+};
+
+/**
  * GET /login
  * Login page.
  */
@@ -109,33 +120,23 @@ exports.postSignup = (req, res, next) => {
         return res.redirect('/signup');
     }
 
-    const user = new User({
+    new User({
         username: req.body.username,
         email: req.body.email,
         password: req.body.password
-    });
-
-    User.findOne({username: req.body.username}, (err, existingUser) => {
-        if (err) {
-            return next(err);
-        }
-        if (existingUser) {
-            req.flash('errors', {msg: 'Username is not available'});
-            return res.redirect('/signup');
-        }
-
-        user.save((err) => {
-            if (err) {
-                return next(err);
-            }
-            req.logIn(user, (err) => {
-                if (err) {
-                    return next(err);
-                }
+    }).save()
+        .then(function (user) {
+            req.logIn(user, function (err) {
                 res.redirect('/');
             });
+        })
+        .catch(function (err) {
+            console.log(err);
+            if (err.code === 'ER_DUP_ENTRY' || err.code === '23505') {
+                req.flash('error', {msg: 'The email address you have entered is already associated with another account.'});
+                return res.redirect('/signup');
+            }
         });
-    });
 };
 
 /**
@@ -144,7 +145,7 @@ exports.postSignup = (req, res, next) => {
  */
 exports.getAccount = (req, res) => {
     res.render('account/profile', {
-        title: 'Account Management'
+        title: 'My Account'
     });
 };
 
@@ -163,23 +164,21 @@ exports.postUpdateProfile = (req, res, next) => {
         return res.redirect('/account');
     }
 
-    User.findById(req.user.id, (err, user) => {
-        if (err) {
-            return next(err);
-        }
-        user.email = req.body.email || '';
-        user.profile.name = req.body.name || '';
-        user.profile.gender = req.body.gender || '';
-        user.profile.country = req.body.country || '';
-        user.profile.city = req.body.city || '';
-        user.save((err) => {
-            if (err) {
-                return next(err);
-            }
-            req.flash('success', {msg: 'Profile information has been updated.'});
-            res.redirect('/account');
-        });
+    const user = new User({id: req.user.id});
+
+    user.save({
+        email: req.body.email,
+        name: req.body.name,
+        gender: req.body.gender,
+        country: req.body.country,
+        city: req.body.city
+    }, {patch: true});
+
+    user.fetch().then(function (user) {
+        req.flash('success', {msg: 'Your profile information has been updated.'});
+        res.redirect('/account');
     });
+
 };
 
 /**
@@ -212,18 +211,14 @@ exports.postUpdatePassword = (req, res, next) => {
         return res.redirect('/account');
     }
 
-    User.findById(req.user.id, (err, user) => {
-        if (err) {
-            return next(err);
-        }
-        user.password = req.body.password;
-        user.save((err) => {
-            if (err) {
-                return next(err);
-            }
-            req.flash('success', {msg: 'Password has been changed.'});
-            res.redirect('/account');
-        });
+    const user = new User({id: req.user.id});
+
+    user.save({password: req.body.password}, {patch: true});
+
+    user.fetch().then(function (user) {
+        req.flash('success', {msg: 'Your password has been changed.'});
+
+        res.redirect('/account');
     });
 };
 
@@ -232,12 +227,9 @@ exports.postUpdatePassword = (req, res, next) => {
  * Delete user account.
  */
 exports.postDeleteAccount = (req, res, next) => {
-    User.remove({_id: req.user.id}, (err) => {
-        if (err) {
-            return next(err);
-        }
+    new User({id: req.user.id}).destroy().then(function (user) {
         req.logout();
-        req.flash('info', {msg: 'Your account has been deleted.'});
+        req.flash('info', {msg: 'Your account has been permanently deleted.'});
         res.redirect('/');
     });
 };
@@ -248,36 +240,44 @@ exports.postDeleteAccount = (req, res, next) => {
  * Unlink OAuth provider.
  */
 exports.getOauthUnlink = (req, res, next) => {
-    const provider = req.params.provider;
-    User.findById(req.user.id, (err, user) => {
-        if (err) { return next(err); }
-        user[provider] = undefined;
-        user.tokens = user.tokens.filter(token => token.kind !== provider);
-        user.save((err) => {
-            if (err) { return next(err); }
-            req.flash('info', { msg: `${provider} account has been unlinked.` });
-            res.redirect('/account');
+    new User({id: req.user.id})
+        .fetch()
+        .then(function (user) {
+            switch (req.params.provider) {
+                case 'facebook':
+                    user.set('facebook', null);
+                    break;
+                case 'google':
+                    user.set('google', null);
+                    break;
+                case 'twitter':
+                    user.set('twitter', null);
+                    break;
+                default:
+                    req.flash('error', {msg: 'Invalid OAuth Provider'});
+                    return res.redirect('/account');
+            }
+            user.save(user.changed, {patch: true}).then(function () {
+                req.flash('success', {msg: 'Your account has been unlinked.'});
+                res.redirect('/account');
+            });
         });
-    });
 };
 
 /**
  * GET /reset/:token
  * Reset Password page.
  */
-exports.getReset = (req, res, next) => {
+exports.getReset = (req, res) => {
     if (req.isAuthenticated()) {
         return res.redirect('/');
     }
-    User
-        .findOne({passwordResetToken: req.params.token})
-        .where('passwordResetExpires').gt(Date.now())
-        .exec((err, user) => {
-            if (err) {
-                return next(err);
-            }
+    new User({passwordResetToken: req.params.token})
+        .where('passwordResetExpires', '>', new Date())
+        .fetch()
+        .then(function (user) {
             if (!user) {
-                req.flash('errors', {msg: 'Password reset token is invalid or has expired.'});
+                req.flash('error', {msg: 'Password reset token is invalid or has expired.'});
                 return res.redirect('/forgot');
             }
             res.render('account/reset', {
@@ -317,32 +317,26 @@ exports.postReset = (req, res, next) => {
     }
 
     async.waterfall([
-        function resetPassword(done) {
-            User
-                .findOne({passwordResetToken: req.params.token})
-                .where('passwordResetExpires').gt(Date.now())
-                .exec((err, user) => {
-                    if (err) {
-                        return next(err);
-                    }
+        function (done) {
+            new User({passwordResetToken: req.params.token})
+                .where('passwordResetExpires', '>', new Date())
+                .fetch()
+                .then(function (user) {
                     if (!user) {
-                        req.flash('errors', {msg: 'Password reset token is invalid or has expired.'});
+                        req.flash('error', {msg: 'Password reset token is invalid or has expired.'});
                         return res.redirect('back');
                     }
-                    user.password = req.body.password;
-                    user.passwordResetToken = undefined;
-                    user.passwordResetExpires = undefined;
-                    user.save((err) => {
-                        if (err) {
-                            return next(err);
-                        }
-                        req.logIn(user, (err) => {
-                            done(err, user);
+                    user.set('password', req.body.password);
+                    user.set('passwordResetToken', null);
+                    user.set('passwordResetExpires', null);
+                    user.save(user.changed, {patch: true}).then(function () {
+                        req.logIn(user, function (err) {
+                            done(err, user.toJSON());
                         });
                     });
                 });
         },
-        function sendResetPasswordEmail(user, done) {
+        function (user, done) {
             const transporter = nodemailer.createTransport({
                 service: 'SendGrid',
                 auth: {
@@ -384,7 +378,7 @@ exports.getForgot = (req, res) => {
 
 /**
  * POST /forgot
- * Create a random token, then the send user an email with a reset link.
+ * Create a random token, then send the user an email with a reset link.
  */
 exports.postForgot = (req, res, next) => {
     req.assert('username', 'Please enter a valid username.').notEmpty();
@@ -396,31 +390,30 @@ exports.postForgot = (req, res, next) => {
     }
 
     async.waterfall([
-        function createRandomToken(done) {
+        function (done) {
             crypto.randomBytes(16, (err, buf) => {
                 const token = buf.toString('hex');
                 done(err, token);
             });
         },
-        function setRandomToken(token, done) {
-            User.findOne({username: req.body.username}, (err, user) => {
-                if (err) {
-                    return done(err);
-                }
-                if (user.email !== req.body.email) {
-                    req.flash('errors', {msg: "Account doesn't match the provided email."});
-                    return res.redirect('/forgot');
-                }
-                if (!user) {
-                    req.flash('errors', {msg: 'Account with that username does not exist.'});
-                    return res.redirect('/forgot');
-                }
-                user.passwordResetToken = token;
-                user.passwordResetExpires = Date.now() + 3600000; // 1 hour
-                user.save((err) => {
-                    done(err, token, user);
+        function (token, done) {
+            new User({email: req.body.username})
+                .fetch()
+                .then(function (user) {
+                    if (user.email !== req.body.email) {
+                        req.flash('errors', {msg: "Account doesn't match the provided email."});
+                        return res.redirect('/forgot');
+                    }
+                    if (!user) {
+                        req.flash('error', {msg: 'Account with that username does not exist.'});
+                        return res.redirect('/forgot');
+                    }
+                    user.set('passwordResetToken', token);
+                    user.set('passwordResetExpires', new Date(Date.now() + 3600000)); // expire in 1 hour
+                    user.save(user.changed, {patch: true}).then(function () {
+                        done(null, token, user.toJSON());
+                    });
                 });
-            });
         },
         function sendForgotPasswordEmail(token, user, done) {
             const transporter = nodemailer.createTransport({
@@ -433,7 +426,7 @@ exports.postForgot = (req, res, next) => {
             const mailOptions = {
                 to: user.email,
                 from: 'e.aitlarbi@student.tudelft.nl',
-                subject: 'Reset your password on To Do',
+                subject: '✔ Reset your password on To Do',
                 text: `You are receiving this email because a reset of the password for your account: ${req.user.username} has been requested.\n\n
           Please click on the following link, or paste this into your browser to complete the process:\n\n
           http://${req.headers.host}/reset/${token}\n\n

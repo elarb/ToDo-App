@@ -26,42 +26,17 @@ exports.index = (req, res) => {
  *  Get Todos from the database
  */
 exports.getTodos = (req, res) => {
-    connection.query('SELECT * FROM todoitem', (err, rows) => {
-        if (err) {
-            console.error(err);
-            return;
-        }
-        let data = [];
-        for (let i = 0; i < rows.length; i++) {
-            data.push(rows[i]);
-        }
-        res.send(data);
-    });
-    function resetPassword(done) {
-        User
-            .findOne({passwordResetToken: req.params.token})
-            .where('passwordResetExpires').gt(Date.now())
-            .exec((err, user) => {
-                if (err) {
-                    return next(err);
-                }
-                if (!user) {
-                    req.flash('errors', {msg: 'Password reset token is invalid or has expired.'});
-                    return res.redirect('back');
-                }
-                user.password = req.body.password;
-                user.passwordResetToken = undefined;
-                user.passwordResetExpires = undefined;
-                user.save((err) => {
-                    if (err) {
-                        return next(err);
-                    }
-                    req.logIn(user, (err) => {
-                        done(err, user);
-                    });
-                });
-            });
-    }
+    // connection.query('SELECT * FROM todoitem', (err, rows) => {
+    //     if (err) {
+    //         console.error(err);
+    //         return;
+    //     }
+    //     let data = [];
+    //     for (let i = 0; i < rows.length; i++) {
+    //         data.push(rows[i]);
+    //     }
+    //     res.send(data);
+    // });
 };
 
 /**
