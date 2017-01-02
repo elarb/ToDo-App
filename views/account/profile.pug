@@ -10,28 +10,28 @@ block content
                     .form-group
                         label.col-sm-3(for='email') Email
                         .col-sm-7
-                            input.form-control(type='email', name='email', id='email', value=user.email)
+                            input.form-control(type='email', name='email', id='email', value=user.Email)
                     .form-group
                         label.col-sm-3(for='name') Name
                         .col-sm-7
-                            input.form-control(type='text', name='name', id='name', value=user.name)
+                            input.form-control(type='text', name='name', id='name', value=user.Name)
                     .form-group
                         label.col-sm-3 Gender
                         .col-sm-4
                             label.radio-inline.radio.col-sm-4
-                                input(type='radio', checked=(user.gender == 'male'), name='gender', value='male', data-toggle='radio')
+                                input(type='radio', checked=(user.Gender == 'male'), name='gender', value='male', data-toggle='radio')
                                 span Male
                             label.radio-inline.col-sm-4
-                                input(type='radio', checked=(user.gender == 'female'), name='gender', value='female', data-toggle='radio')
+                                input(type='radio', checked=(user.Gender == 'female'), name='gender', value='female', data-toggle='radio')
                                 span Female
                     .form-group
                         label.col-sm-3.control-label Country
                         .col-sm-7
-                            select.form-control.crs-country(data-region-id='region-form', name='country', data-default-value=user.country)
+                            select.form-control.crs-country(data-region-id='region-form', name='country', data-default-value=user.Country)
                     .form-group
                         label.col-sm-3.control-label Region
                         .col-sm-7
-                            select.form-control.crs-city(id='city-region', name='region', data-default-value=user.region)
+                            select.form-control.crs-city(id='city-region', name='region', data-default-value=user.Region)
                     .form-group
                         label.col-sm-3 Gravatar
                         .col-sm-4
@@ -78,15 +78,15 @@ block content
                     legend Linked Accounts
                     .form-group
                         .col-sm-offset-3.col-sm-4
-                            if user.facebook
+                            if user.Facebook
                                 p: a.text-danger(href='/account/unlink/facebook') Unlink your Facebook account
                             else
                                 p: a(href='/auth/facebook') Link your Facebook account
-                            if user.twitter
+                            if user.Twitter
                                 p: a.text-danger(href='/account/unlink/twitter') Unlink your Twitter account
                             else
                                 p: a(href='/auth/twitter') Link your Twitter account
-                            if user.google
+                            if user.Google
                                 p: a.text-danger(href='/account/unlink/google') Unlink your Google account
                             else
                                 p: a(href='/auth/google') Link your Google account

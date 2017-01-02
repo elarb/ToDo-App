@@ -20,7 +20,7 @@ passport.deserializeUser((id, done) => {
 /**
  * Sign in using Username and Password.
  */
-passport.use(new LocalStrategy({usernameField: 'username'}, (username, password, done) => {
+passport.use(new LocalStrategy({usernameField: 'Username'}, (username, password, done) => {
     new User({Username: username})
         .fetch()
         .then(function (user) {

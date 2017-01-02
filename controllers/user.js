@@ -34,16 +34,14 @@ exports.getLogin = (req, res) => {
  * Sign in using username and password.
  */
 exports.postLogin = (req, res, next) => {
-    // req.assert('email', 'Email is not valid').isEmail();
     req.assert('username', 'Username cannot be blank').notEmpty();
     req.assert('password', 'Password cannot be blank').notEmpty();
-    // req.sanitize('email').normalizeEmail({remove_dots: false});
 
     const errors = req.validationErrors();
 
     if (errors) {
         req.flash('errors', errors);
-        return res.redirect('/login');
+        return res.render('/login', {username: req.body.username});
     }
 
     passport.authenticate('local', (err, user, info) => {
@@ -52,7 +50,7 @@ exports.postLogin = (req, res, next) => {
         }
         if (!user) {
             req.flash('errors', info);
-            return res.redirect('/login');
+            return res.render('/login', {username: req.body.username});
         }
         req.logIn(user, (err) => {
             if (err) {
@@ -112,18 +110,18 @@ exports.postSignup = (req, res, next) => {
         if (suggestionMsg !== '') {
             req.flash('info', {msg: 'Suggestion: ' + suggestionMsg});
         }
-        return res.render('account/signup', {email: req.body.email, username: req.body.username});
+        return res.render('/signup', {email: req.body.email, username: req.body.username});
     }
 
     if (errors) {
         req.flash('errors', errors);
-        return res.redirect('/signup');
+        return res.render('/signup', {email: req.body.email, username: req.body.username});
     }
 
     new User({
-        username: req.body.username,
-        email: req.body.email,
-        password: req.body.password
+        Username: req.body.username,
+        Email: req.body.email,
+        Password: req.body.password
     }).save()
         .then(function (user) {
             req.logIn(user, function (err) {
@@ -133,8 +131,8 @@ exports.postSignup = (req, res, next) => {
         .catch(function (err) {
             console.log(err);
             if (err.code === 'ER_DUP_ENTRY' || err.code === '23505') {
-                req.flash('error', {msg: 'The email address you have entered is already associated with another account.'});
-                return res.redirect('/signup');
+                req.flash('error', {msg: 'The username you have entered is already associated with another account.'});
+                return res.render('/signup', {email: req.body.email, username: req.body.username});
             }
         });
 };
@@ -167,11 +165,11 @@ exports.postUpdateProfile = (req, res, next) => {
     const user = new User({id: req.user.id});
 
     user.save({
-        email: req.body.email,
-        name: req.body.name,
-        gender: req.body.gender,
-        country: req.body.country,
-        region: req.body.region
+        Email: req.body.email,
+        Name: req.body.name,
+        Gender: req.body.gender,
+        Country: req.body.country,
+        Region: req.body.region
     }, {patch: true});
 
     user.fetch().then(function (user) {
@@ -213,7 +211,7 @@ exports.postUpdatePassword = (req, res, next) => {
 
     const user = new User({id: req.user.id});
 
-    user.save({password: req.body.password}, {patch: true});
+    user.save({Password: req.body.password}, {patch: true});
 
     user.fetch().then(function (user) {
         req.flash('success', {msg: 'Your password has been changed.'});
@@ -225,12 +223,11 @@ exports.postUpdatePassword = (req, res, next) => {
 //Reset Picture
 exports.postResetPicture = (req, res, next) => {
     const user = new User({id: req.user.id});
-
     user.save({
-        picture: null
+        Picture: null
     }, {patch: true});
 
-    user.fetch().then(function (user) {
+    user.fetch().then(() => {
         req.flash('success', {msg: 'Your picture has been reset to your gravatar.'});
         res.redirect('/account');
     });
@@ -259,13 +256,13 @@ exports.getOauthUnlink = (req, res, next) => {
         .then(function (user) {
             switch (req.params.provider) {
                 case 'facebook':
-                    user.set('facebook', null);
+                    user.set('Facebook', null);
                     break;
                 case 'google':
-                    user.set('google', null);
+                    user.set('Google', null);
                     break;
                 case 'twitter':
-                    user.set('twitter', null);
+                    user.set('Twitter', null);
                     break;
                 default:
                     req.flash('error', {msg: 'Invalid OAuth Provider'});
@@ -287,7 +284,7 @@ exports.getReset = (req, res) => {
         return res.redirect('/');
     }
     new User({passwordResetToken: req.params.token})
-        .where('passwordResetExpires', '>', new Date())
+        .where('PasswordResetExpires', '>', new Date())
         .fetch()
         .then(function (user) {
             if (!user) {
@@ -333,16 +330,16 @@ exports.postReset = (req, res, next) => {
     async.waterfall([
         function (done) {
             new User({passwordResetToken: req.params.token})
-                .where('passwordResetExpires', '>', new Date())
+                .where('PasswordResetExpires', '>', new Date())
                 .fetch()
                 .then(function (user) {
                     if (!user) {
                         req.flash('error', {msg: 'Password reset token is invalid or has expired.'});
                         return res.redirect('back');
                     }
-                    user.set('password', req.body.password);
-                    user.set('passwordResetToken', null);
-                    user.set('passwordResetExpires', null);
+                    user.set('Password', req.body.password);
+                    user.set('PasswordResetToken', null);
+                    user.set('PasswordResetExpires', null);
                     user.save(user.changed, {patch: true}).then(function () {
                         req.logIn(user, function (err) {
                             done(err, user.toJSON());
@@ -359,10 +356,10 @@ exports.postReset = (req, res, next) => {
                 }
             });
             const mailOptions = {
-                to: user.email,
-                from: 'e.aitlarbi@student.tudelft.nl',
+                to: user.Email,
+                from: process.env.PERSONAL_MAIL,
                 subject: 'Your To Do password has been changed',
-                text: `Hello,\n\nThis is a confirmation that the password for your account ${user.username} has just been changed.\n`
+                text: `Hello,\n\nThis is a confirmation that the password for your account ${user.Username} has just been changed.\n`
             };
             transporter.sendMail(mailOptions, (err) => {
                 req.flash('success', {msg: 'Success! Your password has been changed.'});
@@ -411,19 +408,19 @@ exports.postForgot = (req, res, next) => {
             });
         },
         function (token, done) {
-            new User({email: req.body.username})
+            new User({Username: req.body.username})
                 .fetch()
                 .then(function (user) {
-                    if (user.email !== req.body.email) {
-                        req.flash('errors', {msg: "Account doesn't match the provided email."});
-                        return res.redirect('/forgot');
-                    }
                     if (!user) {
                         req.flash('error', {msg: 'Account with that username does not exist.'});
                         return res.redirect('/forgot');
                     }
-                    user.set('passwordResetToken', token);
-                    user.set('passwordResetExpires', new Date(Date.now() + 3600000)); // expire in 1 hour
+                    if (user.Email !== req.body.email) {
+                        req.flash('errors', {msg: "Account doesn't match the provided email."});
+                        return res.redirect('/forgot');
+                    }
+                    user.set('PasswordResetToken', token);
+                    user.set('PasswordResetExpires', new Date(Date.now() + 3600000)); // expire in 1 hour
                     user.save(user.changed, {patch: true}).then(function () {
                         done(null, token, user.toJSON());
                     });
@@ -438,8 +435,8 @@ exports.postForgot = (req, res, next) => {
                 }
             });
             const mailOptions = {
-                to: user.email,
-                from: 'e.aitlarbi@student.tudelft.nl',
+                to: user.Email,
+                from: process.env.PERSONAL_MAIL,
                 subject: '✔ Reset your password on To Do',
                 text: `You are receiving this email because a reset of the password for your account: ${req.user.username} has been requested.\n\n
           Please click on the following link, or paste this into your browser to complete the process:\n\n
