@@ -7,15 +7,16 @@ A To Do App for Children.
 ## Features
 
 
-- **Local Authentication** using Email and Password
+- **Local Authentication** using Username and Password
 - **OAuth 1.0a Authentication** via Twitter
 - **OAuth 2.0 Authentication** via Facebook, Google
+- Password strength check using Dropbox [zxcvbn](https://github.com/dropbox/zxcvbn)
 - Flash notifications
 - MVC Project Structure
 - Node.js clusters support
 - Sass stylesheets (auto-compiled via middleware)
-- Bootstrap 3 + Extra Themes
-- Contact Form (powered by Mailgun, Sendgrid or Mandrill)
+- Bootstrap 3 
+- Contact Form powered by Sendgrid
 - **Account Management**
  - Gravatar
  - Profile Details
@@ -29,7 +30,7 @@ A To Do App for Children.
 Prerequisites
 -------------
 
-- [MongoDB](https://www.mongodb.org/downloads)
+- [MySQL](https://www.mysql.com/)
 - [Node.js 6.0+](http://nodejs.org)
 - Command Line Tools
 
