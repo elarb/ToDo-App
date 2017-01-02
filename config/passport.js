@@ -21,7 +21,7 @@ passport.deserializeUser((id, done) => {
  * Sign in using Username and Password.
  */
 passport.use(new LocalStrategy({usernameField: 'username'}, (username, password, done) => {
-    new User({username: username})
+    new User({Username: username})
         .fetch()
         .then(function (user) {
             if (!user) {
@@ -75,10 +75,10 @@ passport.use(new FacebookStrategy({
                 new User({id: req.user.id})
                     .fetch()
                     .then(function (user) {
-                        user.set('name', user.get('name') || profile.name.givenName + ' ' + profile.name.familyName);
-                        user.set('gender', user.get('gender') || profile._json.gender);
-                        user.set('picture', user.get('picture') || 'https://graph.facebook.com/' + profile.id + '/picture?type=large');
-                        user.set('facebook', profile.id);
+                        user.set('Name', user.get('Name') || profile.name.givenName + ' ' + profile.name.familyName);
+                        user.set('Gender', user.get('Gender') || profile._json.gender);
+                        user.set('Picture', user.get('Picture') || 'https://graph.facebook.com/' + profile.id + '/picture?type=large');
+                        user.set('Facebook', profile.id);
                         user.save(user.changed, {patch: true}).then(function () {
                             req.flash('success', {msg: 'Your Facebook account has been linked.'});
                             done(null, user);
@@ -86,26 +86,26 @@ passport.use(new FacebookStrategy({
                     });
             });
     } else {
-        new User({facebook: profile.id})
+        new User({Facebook: profile.id})
             .fetch()
             .then(function (user) {
                 if (user) {
                     return done(null, user);
                 }
-                new User({email: profile._json.email})
+                new User({Email: profile._json.email})
                     .fetch()
                     .then(function (user) {
                         if (user) {
-                            req.flash('error', {msg: user.get('email') + ' is already associated with another account.'});
+                            req.flash('error', {msg: user.get('Email') + ' is already associated with another account.'});
                             return done();
                         }
                         user = new User();
-                        user.set('name', profile.name.givenName + ' ' + profile.name.familyName);
-                        user.set('email', profile._json.email);
-                        user.set('gender', profile._json.gender);
-                        //TODO: Add country and city
-                        user.set('picture', 'https://graph.facebook.com/' + profile.id + '/picture?type=large');
-                        user.set('facebook', profile.id);
+                        user.set('Name', profile.name.givenName + ' ' + profile.name.familyName);
+                        user.set('Email', profile._json.email);
+                        user.set('Gender', profile._json.gender);
+                        //TODO: Add country and regio
+                        user.set('Picture', 'https://graph.facebook.com/' + profile.id + '/picture?type=large');
+                        user.set('Facebook', profile.id);
                         user.save().then(function (user) {
                             done(null, user);
                         });
@@ -122,7 +122,7 @@ passport.use(new TwitterStrategy({
     passReqToCallback: true
 }, function (req, accessToken, tokenSecret, profile, done) {
     if (req.user) {
-        new User({twitter: profile.id})
+        new User({Twitter: profile.id})
             .fetch()
             .then(function (user) {
                 if (user) {
@@ -132,10 +132,10 @@ passport.use(new TwitterStrategy({
                 new User({id: req.user.id})
                     .fetch()
                     .then(function (user) {
-                        user.set('name', user.get('name') || profile.displayName);
-                        //TODO: Add Country and City
-                        user.set('picture', user.get('picture') || profile._json.profile_image_url_https);
-                        user.set('twitter', profile.id);
+                        user.set('Name', user.get('Name') || profile.displayName);
+                        //TODO: Add Country and Regio
+                        user.set('Picture', user.get('Picture') || profile._json.profile_image_url_https);
+                        user.set('Twitter', profile.id);
                         user.save(user.changed, {patch: true}).then(function () {
                             req.flash('success', {msg: 'Your Twitter account has been linked.'});
                             done(null, user);
@@ -143,7 +143,7 @@ passport.use(new TwitterStrategy({
                     });
             });
     } else {
-        new User({twitter: profile.id})
+        new User({Twitter: profile.id})
             .fetch()
             .then(function (user) {
                 if (user) {
@@ -155,11 +155,11 @@ passport.use(new TwitterStrategy({
                 // For example, after login, check if email contains @twitter.com, then redirect to My Account page,
                 // and restrict user's page navigation until they update their email address.
                 user = new User();
-                user.set('name', profile.displayName);
-                user.set('email', profile.username + '@twitter.com');
-                //TODO: Add Country and City
-                user.set('picture', profile._json.profile_image_url_https);
-                user.set('twitter', profile.id);
+                user.set('Name', profile.displayName);
+                user.set('Email', profile.username + '@twitter.com');
+                //TODO: Add Country and Region
+                user.set('Picture', profile._json.profile_image_url_https);
+                user.set('Twitter', profile.id);
                 user.save().then(function (user) {
                     done(null, user);
                 });
@@ -177,7 +177,7 @@ passport.use(new GoogleStrategy({
     passReqToCallback: true
 }, function (req, accessToken, refreshToken, profile, done) {
     if (req.user) {
-        new User({google: profile.id})
+        new User({Google: profile.id})
             .fetch()
             .then(function (user) {
                 if (user) {
@@ -187,10 +187,10 @@ passport.use(new GoogleStrategy({
                 new User({id: req.user.id})
                     .fetch()
                     .then(function (user) {
-                        user.set('name', user.get('name') || profile.displayName);
-                        user.set('gender', user.get('gender') || profile._json.gender);
-                        user.set('picture', user.get('picture') || profile._json.image.url);
-                        user.set('google', profile.id);
+                        user.set('Name', user.get('Name') || profile.displayName);
+                        user.set('Gender', user.get('Gender') || profile._json.gender);
+                        user.set('Picture', user.get('Picture') || profile._json.image.url);
+                        user.set('Google', profile.id);
                         user.save(user.changed, {patch: true}).then(function () {
                             req.flash('success', {msg: 'Your Google account has been linked.'});
                             done(null, user);
@@ -198,26 +198,26 @@ passport.use(new GoogleStrategy({
                     });
             });
     } else {
-        new User({google: profile.id})
+        new User({Google: profile.id})
             .fetch()
             .then(function (user) {
                 if (user) {
                     return done(null, user);
                 }
-                new User({email: profile.emails[0].value})
+                new User({Email: profile.emails[0].value})
                     .fetch()
                     .then(function (user) {
                         if (user) {
-                            req.flash('error', {msg: user.get('email') + ' is already associated with another account.'});
+                            req.flash('error', {msg: user.get('Email') + ' is already associated with another account.'});
                             return done();
                         }
                         user = new User();
-                        user.set('name', profile.displayName);
-                        user.set('email', profile.emails[0].value);
-                        user.set('gender', profile._json.gender);
-                        //TODO: Add Country and City from google response
-                        user.set('picture', profile._json.image.url);
-                        user.set('google', profile.id);
+                        user.set('Name', profile.displayName);
+                        user.set('Email', profile.emails[0].value);
+                        user.set('Gender', profile._json.gender);
+                        //TODO: Add Country and Region from google response
+                        user.set('Picture', profile._json.image.url);
+                        user.set('Google', profile.id);
                         user.save().then(function (user) {
                             done(null, user);
                         });
