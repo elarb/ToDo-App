@@ -12,7 +12,7 @@ exports.isAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {
         return next();
     }
-    req.flash('errors', {msg: 'Login Required to access that.'});
+    req.flash('errors', {msg: 'Please log in first.'});
     res.redirect('/login');
 };
 
