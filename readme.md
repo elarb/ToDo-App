@@ -7,7 +7,7 @@ A To Do App for Children.
 ## Features
 
 
-- **Local Authentication** using Username and Password
+- **Local Authentication** using Email and Password
 - **OAuth 1.0a Authentication** via Twitter
 - **OAuth 2.0 Authentication** via Facebook, Google
 - Password strength check using Dropbox [zxcvbn](https://github.com/dropbox/zxcvbn)

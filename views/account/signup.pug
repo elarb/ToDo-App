@@ -8,11 +8,8 @@ block content
                     legend Create an account
                     input(type='hidden', name='_csrf', value=_csrf)
                     .form-group
-                        label(for='username') Username
-                        input.form-control(type='text', name='username', id='username', placeholder='Username', autofocus=true, required)
-                    .form-group
                         label(for='email') Email
-                        input.form-control(type='email', name='email', id='email', placeholder='Email', required)
+                        input.form-control(type='email', name='email', id='email', placeholder='Email', autofocus=true, required)
                     .form-group
                         label(for='password') Password
                         input.form-control(type='password', name='password', id='password', placeholder='Password', required)
