@@ -26,6 +26,11 @@ A To Do App for Children.
  - Link multiple OAuth strategies to one account
  - Delete Account
 - CSRF protection
+ Soon:
+- An even better password check
+- Anti Cracking / Bots (Captcha)
+- Admin Panel
+- Selecting themes
 
 Prerequisites
 -------------
@@ -55,6 +60,7 @@ yarn install
 # Then simply start your app
 node app.js
 ```
+
 ## Contributing
 
 Fork the project, create a new branch, make your changes, and open a pull request.
