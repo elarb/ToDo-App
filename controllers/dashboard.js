@@ -6,18 +6,29 @@ const chalk = require('chalk');
 /**
  * Connect to MySQL.
  */
-const connection = mysql.createConnection({
+let mysqlClient = mysql.createConnection({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME
 });
-connection.connect();
+handleDisconnect(mysqlClient);
 
-connection.on('error', () => {
-    console.log('%s MySQL connection error. Please make sure MySQL is running.', chalk.red('✗'));
-    process.exit();
-});
+function handleDisconnect(client) {
+    client.on('error', function (error) {
+        if (!error.fatal) return;
+        if (error.code !== 'PROTOCOL_CONNECTION_LOST') throw err;
+
+        console.error('%s Re-connecting lost MySQL connection: ', chalk.red('✗') + error.stack);
+
+        // NOTE: This assignment is to a variable from an outer scope; this is extremely important
+        // If this said `client =` it wouldn't do what you want. The assignment here is implicitly changed
+        // to `global.mysqlClient =` in node.
+        mysqlClient = mysql.createConnection(client.config);
+        handleDisconnect(mysqlClient);
+        mysqlClient.connect();
+    });
+};
 
 /**
  * GET /
@@ -34,7 +45,7 @@ exports.index = (req, res) => {
  *  Get Todos from the database
  */
 exports.getTodos = (req, res) => {
-    connection.query('SELECT * FROM todoitems WHERE userid = ?', req.user.id, (err, rows) => {
+    mysqlClient.query('SELECT * FROM todoitems WHERE userid = ?', req.user.id, (err, rows) => {
         if (err) {
             console.error(err);
             return;
@@ -55,7 +66,7 @@ exports.update = (req, res) => {
     let todo = req.body.data;
     let date = new Date(todo.DueDate);
     todo.DueDate = date.toISOString().slice(0, 19).replace('T', ' ');
-    let query = connection.query('UPDATE todoitems SET Title = ?, DueDate = ?, Completed = ?, Priority = ? WHERE Id = ?',
+    let query = mysqlClient.query('UPDATE todoitems SET Title = ?, DueDate = ?, Completed = ?, Priority = ? WHERE Id = ?',
         [todo.Title, todo.DueDate, todo.Completed, todo.Priority, todo.Id]);
     res.end();
 };
@@ -66,7 +77,7 @@ exports.update = (req, res) => {
  */
 exports.delete = (req, res) => {
     let todo = req.body.data;
-    connection.query("DELETE FROM todoitems WHERE id = ?", todo.Id);
+    mysqlClient.query("DELETE FROM todoitems WHERE id = ?", todo.Id);
     res.end();
 };
 
@@ -74,19 +85,18 @@ exports.delete = (req, res) => {
  *  POST /
  *  Add a to-do to the database.
  */
-//TODO: Major issue: todo id is incrementing here but resets in client memory
 exports.addTodo = (req, res) => {
     let todo = req.body.data;
     let date = new Date(todo.DueDate);
     todo.DueDate = date.toISOString().slice(0, 19).replace('T', ' ');
 
-    const query = connection.query('INSERT INTO todoitems SET Title = ?, DueDate = ?, Completed = ?, Priority = ?, UserId = ?',
+    const query = mysqlClient.query('INSERT INTO todoitems SET Title = ?, DueDate = ?, Completed = ?, Priority = ?, UserId = ?',
         [todo.Title, todo.DueDate, todo.Completed, todo.Priority, req.user.id], (err, result) => {
             if (err) {
                 console.error(err);
             }
+            res.status(200).send(result.insertId.toString());
         });
-    res.end();
 };
 
 //TODO: Add custom theme functionality with the use of cookies
