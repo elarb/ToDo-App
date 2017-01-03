@@ -18,21 +18,21 @@ passport.deserializeUser((id, done) => {
 });
 
 /**
- * Sign in using Username and Password.
+ * Sign in using Email and Password.
  */
-passport.use(new LocalStrategy({usernameField: 'username'}, (username, password, done) => {
-    new User({Username: username})
+passport.use(new LocalStrategy({usernameField: 'email'}, (email, password, done) => {
+    new User({Email: email})
         .fetch()
         .then(function (user) {
             if (!user) {
                 return done(null, false, {
-                    msg: 'The user ' + username + ' is not associated with any account. ' +
-                    'Double-check your username and try again.'
+                    msg: 'The user ' + email + ' is not associated with any account. ' +
+                    'Double-check your email and try again.'
                 });
             }
             user.comparePassword(password, function (err, isMatch) {
                 if (!isMatch) {
-                    return done(null, false, {msg: 'Invalid username or password'});
+                    return done(null, false, {msg: 'Invalid email or password'});
                 }
                 return done(null, user);
             });

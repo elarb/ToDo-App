@@ -31,11 +31,13 @@ exports.getLogin = (req, res) => {
 
 /**
  * POST /login
- * Sign in using username and password.
+ * Sign in using Email and password.
  */
 exports.postLogin = (req, res, next) => {
-    req.assert('username', 'Username cannot be blank').notEmpty();
+    req.assert('email', 'Email is not valid').isEmail();
+    req.assert('email', 'Email cannot be blank').notEmpty();
     req.assert('password', 'Password cannot be blank').notEmpty();
+    req.sanitize('email').normalizeEmail({remove_dots: false});
 
     const errors = req.validationErrors();
 
@@ -90,8 +92,7 @@ exports.getSignup = (req, res) => {
  */
 exports.postSignup = (req, res, next) => {
     req.assert('email', 'Email is not valid').isEmail();
-    req.assert('username', 'Username is not valid').notEmpty();
-    req.assert('username', 'Username must be at least 4 characters and at most 10 characters long').len(4, 10);
+    req.assert('email', 'Email cannot be blank').notEmpty();
     req.assert('confirmPassword', 'Passwords do not match').equals(req.body.password);
     req.sanitize('email').normalizeEmail({remove_dots: false});
 
@@ -110,16 +111,15 @@ exports.postSignup = (req, res, next) => {
         if (suggestionMsg !== '') {
             req.flash('info', {msg: 'Suggestion: ' + suggestionMsg});
         }
-        return res.render('/signup', {email: req.body.email, username: req.body.username});
+        return res.render('/signup', {email: req.body.email});
     }
 
     if (errors) {
         req.flash('errors', errors);
-        return res.render('/signup', {email: req.body.email, username: req.body.username});
+        return res.render('/signup', {email: req.body.email});
     }
 
     new User({
-        Username: req.body.username,
         Email: req.body.email,
         Password: req.body.password
     }).save()
@@ -131,8 +131,8 @@ exports.postSignup = (req, res, next) => {
         .catch(function (err) {
             console.log(err);
             if (err.code === 'ER_DUP_ENTRY' || err.code === '23505') {
-                req.flash('error', {msg: 'The username you have entered is already associated with another account.'});
-                return res.render('/signup', {email: req.body.email, username: req.body.username});
+                req.flash('error', {msg: 'The email-address you have entered is already associated with another account.'});
+                return res.render('/signup');
             }
         });
 };
@@ -153,6 +153,7 @@ exports.getAccount = (req, res) => {
  */
 exports.postUpdateProfile = (req, res, next) => {
     req.assert('email', 'Please enter a valid email address.').isEmail();
+    req.assert('email', 'Email cannot be blank').notEmpty();
     req.sanitize('email').normalizeEmail({remove_dots: false});
 
     const errors = req.validationErrors();
@@ -175,6 +176,10 @@ exports.postUpdateProfile = (req, res, next) => {
     user.fetch().then(function (user) {
         req.flash('success', {msg: 'Your profile information has been updated.'});
         res.redirect('/account');
+    }).catch(function (err) {
+        if (err.code === 'ER_DUP_ENTRY') {
+            req.flash('error', {msg: 'The email address you have entered is already associated with another account.'});
+        }
     });
 
 };
@@ -359,7 +364,7 @@ exports.postReset = (req, res, next) => {
                 to: user.Email,
                 from: process.env.PERSONAL_MAIL,
                 subject: 'Your To Do password has been changed',
-                text: `Hello,\n\nThis is a confirmation that the password for your account ${user.Username} has just been changed.\n`
+                text: `Hello,\n\nThis is a confirmation that the password for your account has just been changed.\n`
             };
             transporter.sendMail(mailOptions, (err) => {
                 req.flash('success', {msg: 'Success! Your password has been changed.'});
@@ -392,7 +397,10 @@ exports.getForgot = (req, res) => {
  * Create a random token, then send the user an email with a reset link.
  */
 exports.postForgot = (req, res, next) => {
-    req.assert('username', 'Please enter a valid username.').notEmpty();
+    req.assert('email', 'Email is not valid').isEmail();
+    req.assert('email', 'Email cannot be blank').notEmpty();
+    req.sanitize('email').normalizeEmail({remove_dots: false});
+
     const errors = req.validationErrors();
 
     if (errors) {
@@ -408,15 +416,11 @@ exports.postForgot = (req, res, next) => {
             });
         },
         function (token, done) {
-            new User({Username: req.body.username})
+            new User({Email: req.body.email})
                 .fetch()
                 .then(function (user) {
                     if (!user) {
-                        req.flash('error', {msg: 'Account with that username does not exist.'});
-                        return res.redirect('/forgot');
-                    }
-                    if (user.Email !== req.body.email) {
-                        req.flash('errors', {msg: "Account doesn't match the provided email."});
+                        req.flash('error', {msg: 'The email address ' + req.body.email + ' is not associated with any account.'});
                         return res.redirect('/forgot');
                     }
                     user.set('PasswordResetToken', token);
@@ -426,7 +430,7 @@ exports.postForgot = (req, res, next) => {
                     });
                 });
         },
-        function sendForgotPasswordEmail(token, user, done) {
+        (token, user, done) => {
             const transporter = nodemailer.createTransport({
                 service: 'SendGrid',
                 auth: {
@@ -438,7 +442,7 @@ exports.postForgot = (req, res, next) => {
                 to: user.Email,
                 from: process.env.PERSONAL_MAIL,
                 subject: '✔ Reset your password on To Do',
-                text: `You are receiving this email because a reset of the password for your account: ${req.user.username} has been requested.\n\n
+                text: `You are receiving this email because a reset of the password for your account has been requested.\n\n
           Please click on the following link, or paste this into your browser to complete the process:\n\n
           http://${req.headers.host}/reset/${token}\n\n
           If you did not request this, please ignore this email and your password will remain unchanged.\n`
