@@ -2,8 +2,8 @@ const crypto = require('crypto');
 const bcrypt = require('bcrypt-nodejs');
 const bookshelf = require('../config/bookshelf');
 
-var User = bookshelf.Model.extend({
-    tableName: 'users',
+let User = bookshelf.Model.extend({
+    tableName: 'Users',
     hasTimestamps: true,
 
     initialize: function () {
@@ -11,7 +11,7 @@ var User = bookshelf.Model.extend({
     },
 
     hashPassword: function (model, attrs, options) {
-        var password = options.patch ? attrs.password : model.get('password');
+        let password = options.patch ? attrs.Password : model.get('Password');
         if (!password) {
             return;
         }
@@ -19,9 +19,9 @@ var User = bookshelf.Model.extend({
             bcrypt.genSalt(10, function (err, salt) {
                 bcrypt.hash(password, salt, null, function (err, hash) {
                     if (options.patch) {
-                        attrs.password = hash;
+                        attrs.Password = hash;
                     }
-                    model.set('password', hash);
+                    model.set('Password', hash);
                     resolve();
                 });
             });
@@ -29,20 +29,20 @@ var User = bookshelf.Model.extend({
     },
 
     comparePassword: function (password, done) {
-        var model = this;
-        bcrypt.compare(password, model.get('password'), function (err, isMatch) {
+        const model = this;
+        bcrypt.compare(password, model.get('Password'), function (err, isMatch) {
             done(err, isMatch);
         });
     },
 
-    hidden: ['password', 'passwordResetToken', 'passwordResetExpires'],
+    hidden: ['Password', 'PasswordResetToken', 'PasswordResetExpires'],
 
     virtuals: {
         gravatar: function () {
-            if (!this.get('email')) {
+            if (!this.get('Email')) {
                 return 'https://gravatar.com/avatar/?s=200&d=retro';
             }
-            var md5 = crypto.createHash('md5').update(this.get('email')).digest('hex');
+            const md5 = crypto.createHash('md5').update(this.get('Email')).digest('hex');
             return 'https://gravatar.com/avatar/' + md5 + '?s=200&d=retro';
         }
     }
