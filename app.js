@@ -2,6 +2,7 @@
  * Module dependencies.
  */
 const express = require('express');
+const _ = require('lodash');
 const compression = require('compression');
 const methodOverride = require('method-override');
 const session = require('express-session');
@@ -19,6 +20,7 @@ const expressStatusMonitor = require('express-status-monitor');
 const sass = require('node-sass-middleware');
 const multer = require('multer');
 const levenshtein = require('fast-levenshtein');
+
 
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
@@ -45,15 +47,8 @@ const passportConfig = require('./config/passport');
  */
 const app = express();
 
-/**
- * Connect to MongoDB.
- */
-// mongoose.Promise = global.Promise;
-// mongoose.connect(process.env.MONGODB_URI || process.env.MONGOLAB_URI);
-// mongoose.connection.on('error', () => {
-//     console.log('%s MongoDB connection error. Please make sure MongoDB is running.', chalk.red('✗'));
-//     process.exit();
-// });
+const server = require('http').Server(app);
+const io = require('socket.io').listen(server);
 
 /**
  * Express configuration.
@@ -82,11 +77,24 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
-// app.use((req, res, next) => {
-//     lusca.csrf()(req, res, next);
-// });
-// app.use(lusca.xframe('SAMEORIGIN'));
-// app.use(lusca.xssProtection(true));
+
+const csrfExclude = ['/addtodo', '/deletetodo', '/updatetodo', '/gettodos'];
+app.use((req, res, next) => {
+    // CSRF protection.
+    if (_.includes(csrfExclude, req.path)) {
+        console.log('true');
+        return next();
+    }
+    lusca.csrf()(req, res, next);
+});
+
+// app.use(lusca.csp({/* ... */}));
+app.use(lusca.xframe('SAMEORIGIN'));
+app.use(lusca.p3p('ABCDEF'));
+app.use(lusca.hsts({maxAge: 31536000}));
+app.use(lusca.xssProtection(true));
+
+
 app.use((req, res, next) => {
     res.locals.user = req.user ? req.user.toJSON() : null;
     next();
@@ -175,6 +183,13 @@ if (app.get('env') === 'production') {
         res.sendStatus(err.status || 500);
     });
 }
+
+io.on('connection', function (socket) {
+    socket.emit('news', {hello: 'world'});
+    socket.on('my other event', function (data) {
+        console.log(data);
+    });
+});
 
 /**
  * Start Express server.
