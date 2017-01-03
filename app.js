@@ -82,7 +82,6 @@ const csrfExclude = ['/addtodo', '/deletetodo', '/updatetodo', '/gettodos'];
 app.use((req, res, next) => {
     // CSRF protection.
     if (_.includes(csrfExclude, req.path)) {
-        console.log('true');
         return next();
     }
     lusca.csrf()(req, res, next);
