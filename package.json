@@ -49,7 +49,8 @@
     "pug": "^2.0.0-beta6",
     "request": "^2.78.0",
     "validator": "^6.1.0",
-    "zxcvbn": "latest"
+    "zxcvbn": "latest",
+    "socket.io": "latest"
   },
   "devDependencies": {
     "chai": "^3.5.0",
