@@ -38,8 +38,8 @@ A To Do App for Children.
 Prerequisites
 -------------
 
-- [MySQL](https://www.mysql.com/)
-- [Node.js 6.0+](http://nodejs.org)
+- [<img src="https://upload.wikimedia.org/wikipedia/en/thumb/6/62/MySQL.svg/640px-MySQL.svg.png" height="35px">](https://www.mysql.com/)
+- [<img src="https://nodejs.org/static/apple-touch-icon.png" align="top" height="35px">](http://nodejs.org)
 - Command Line Tools
 
 Getting Started
