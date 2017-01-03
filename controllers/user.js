@@ -41,7 +41,7 @@ exports.postLogin = (req, res, next) => {
 
     if (errors) {
         req.flash('errors', errors);
-        return res.render('/login', {username: req.body.username});
+        return res.redirect('/login');
     }
 
     passport.authenticate('local', (err, user, info) => {
@@ -50,7 +50,7 @@ exports.postLogin = (req, res, next) => {
         }
         if (!user) {
             req.flash('errors', info);
-            return res.render('/login', {username: req.body.username});
+            return res.redirect('/login');
         }
         req.logIn(user, (err) => {
             if (err) {
@@ -329,7 +329,7 @@ exports.postReset = (req, res, next) => {
 
     async.waterfall([
         function (done) {
-            new User({passwordResetToken: req.params.token})
+            new User({PasswordResetToken: req.params.token})
                 .where('PasswordResetExpires', '>', new Date())
                 .fetch()
                 .then(function (user) {
