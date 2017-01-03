@@ -1,15 +1,23 @@
 const mysql = require('mysql');
 const User = require('../models/User');
+const chalk = require('chalk');
 
-// Connection to the database.
+
+/**
+ * Connect to MySQL.
+ */
 const connection = mysql.createConnection({
-    host: 'localhost',
-    user: process.env.MYSQL_USER,
-    password: process.env.MYSQL_PW,
-    database: 'todo'
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
 });
-
 connection.connect();
+
+connection.on('error', () => {
+    console.log('%s MySQL connection error. Please make sure MySQL is running.', chalk.red('✗'));
+    process.exit();
+});
 
 /**
  * GET /
@@ -26,17 +34,17 @@ exports.index = (req, res) => {
  *  Get Todos from the database
  */
 exports.getTodos = (req, res) => {
-    // connection.query('SELECT * FROM todoitem', (err, rows) => {
-    //     if (err) {
-    //         console.error(err);
-    //         return;
-    //     }
-    //     let data = [];
-    //     for (let i = 0; i < rows.length; i++) {
-    //         data.push(rows[i]);
-    //     }
-    //     res.send(data);
-    // });
+    connection.query('SELECT * FROM todoitems WHERE userid = ?', req.user.id, (err, rows) => {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        let data = [];
+        for (let i = 0; i < rows.length; i++) {
+            data.push(rows[i]);
+        }
+        res.send(data);
+    });
 };
 
 /**
@@ -47,8 +55,9 @@ exports.update = (req, res) => {
     let todo = req.body.data;
     let date = new Date(todo.DueDate);
     todo.DueDate = date.toISOString().slice(0, 19).replace('T', ' ');
-    let query = connection.query('UPDATE todoitem SET Title = ?, DueDate = ?, Completed = ?, Priority = ? WHERE Id = ?',
+    let query = connection.query('UPDATE todoitems SET Title = ?, DueDate = ?, Completed = ?, Priority = ? WHERE Id = ?',
         [todo.Title, todo.DueDate, todo.Completed, todo.Priority, todo.Id]);
+    res.end();
 };
 
 /**
@@ -57,27 +66,27 @@ exports.update = (req, res) => {
  */
 exports.delete = (req, res) => {
     let todo = req.body.data;
-    connection.query("DELETE FROM todoitem WHERE id = ?", todo.Id);
+    connection.query("DELETE FROM todoitems WHERE id = ?", todo.Id);
+    res.end();
 };
 
 /**
  *  POST /
  *  Add a to-do to the database.
  */
-exports.addTodo = (req) => {
+//TODO: Major issue: todo id is incrementing here but resets in client memory
+exports.addTodo = (req, res) => {
     let todo = req.body.data;
     let date = new Date(todo.DueDate);
     todo.DueDate = date.toISOString().slice(0, 19).replace('T', ' ');
-    let now = new Date(Date.now());
-    todo.CreationDate = now.toISOString().slice(0, 19).replace('T', ' ');
 
-    const query = connection.query('INSERT INTO todoitem SET Title = ?, DueDate = ?, Completed = ?, Priority = ?, CreationDate = ?',
-        [todo.Title, todo.DueDate, todo.Completed, todo.Priority, todo.CreationDate], (err, result) => {
+    const query = connection.query('INSERT INTO todoitems SET Title = ?, DueDate = ?, Completed = ?, Priority = ?, UserId = ?',
+        [todo.Title, todo.DueDate, todo.Completed, todo.Priority, req.user.id], (err, result) => {
             if (err) {
                 console.error(err);
-                return;
             }
         });
+    res.end();
 };
 
 //TODO: Add custom theme functionality with the use of cookies
