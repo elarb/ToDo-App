@@ -26,9 +26,12 @@ A To Do App for Children.
  - Link multiple OAuth strategies to one account
  - Delete Account
 - CSRF protection
- Soon:
+
+## Soon:
+
+
 - An even better password check
-- Anti Cracking / Bots (Captcha)
+- Anti Cracking / Bots (**Captcha**)
 - Admin Panel
 - Selecting themes
 
