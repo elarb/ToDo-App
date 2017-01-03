@@ -1,4 +1,5 @@
 let main = (data) => {
+
     // FIELDS
     let toDos = data;
     const $inputButton = $("#add-button");
@@ -40,14 +41,6 @@ let main = (data) => {
         });
     };
 
-    // Adds the todoitem to the SQL DB
-    let addTodoToDB = (TodoItem) => {
-        $.post("/addtodo", {
-            "data": TodoItem
-        });
-    };
-
-
     (function () {
         toDos.forEach((todo) => {
             todo.DueDate = todo.DueDate.substring(0, 10);
@@ -70,33 +63,24 @@ let main = (data) => {
             let title = $textInput.val();
             let date = $dateInput.val();
 
-            //Array with all ids
-            let toDoIds = toDos.map((toDo) => {
-                return toDo.Id;
+            // New to-do item starts with priority of 1
+            let newToDo = new TodoItem(null, title, date, 1, 0);
+
+            // Adds the todoitem to the SQL DB and updates the id
+            $.post("/addtodo", {
+                "data": newToDo
+            }, function (data) {
+                newToDo.Id = parseInt(data);
+                toDos.push(newToDo);
+                addTodo(newToDo);
             });
-            // The new Id is the highest Id now
-            let id = 0;
-            if (toDoIds.length > 0) {
-                id = Math.max.apply(Math, toDoIds) + 1;
-            }
-
-            // New to-do item starts with priority of 3
-            let newToDo = new TodoItem(id, title, date, 3, 0);
-
-            toDos.push(newToDo);
-            addTodo(newToDo);
-            addTodoToDB(newToDo);
-
             //reset value of the input fields.
             $textInput.val("");
             $dateInput.val("");
 
         } else {
             //TODO: This should be a flash
-            //alert("You forgot to fill in a title or the date!")
-            flash('errors', {
-                msg: "You forgot to fill in a title or the date!"
-            });
+            alert("You forgot to fill in a title or the date!");
         }
     });
 
@@ -210,10 +194,15 @@ let main = (data) => {
     //sort by date
     $sortDateButton.on("click", () => {
         //TODO: improve this block of code
-        for (let i = 0; i < toDos.length; i++) {
-            let ref = "#" + toDos[i].Id;
-            $(ref).remove();
-        }
+        // for (let i = 0; i < toDos.length; i++) {
+        //     let ref = "#" + toDos[i].Id;
+        //     $(ref).remove();
+        // }
+
+        toDos.forEach(function (TodoItem) {
+            $('#' + TodoItem.Id).remove();
+        });
+
         toDos.sort((a, b) => {
             if (a.DueDate < b.DueDate) {
                 return -1;
@@ -227,10 +216,15 @@ let main = (data) => {
     //sort by descriptions
     $sortDescrButton.on("click", () => {
         //TODO: improve this block of code
-        for (let i = 0; i < toDos.length; i++) {
-            let ref = "#" + toDos[i].Id;
-            $(ref).remove();
-        }
+        // for (let i = 0; i < toDos.length; i++) {
+        //     let ref = "#" + toDos[i].Id;
+        //     $(ref).remove();
+        // }
+
+        toDos.forEach(function (TodoItem) {
+            $('#' + TodoItem.Id).remove();
+        });
+
         toDos.sort((a, b) => {
             if (a.Title < b.Title) {
                 return -1;

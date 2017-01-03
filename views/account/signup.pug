@@ -1,28 +1,38 @@
 extends ../layout
 
 block content
-    .page-header
-        h3 Sign up
-    form.form-horizontal(id='signup-form', method='POST')
-        input(type='hidden', name='_csrf', value=_csrf)
-        .form-group
-            label.col-sm-3.control-label(for='email') Email
-            .col-sm-7
-                input.form-control(type='email', name='email', id='email', placeholder='Email', value=email, autofocus, required)
-        .form-group
-            label.col-sm-3.control-label(for='username') Username
-            .col-sm-7
-                input.form-control(type='text', name='username', id='username', placeholder='Username', value=username, required)
-        .form-group
-            label.col-sm-3.control-label(for='password') Password
-            .col-sm-7
-                input.form-control(type='password', name='password', id='password', placeholder='Password', required)
-        .form-group
-            label.col-sm-3.control-label(for='confirmPassword') Confirm Password
-            .col-sm-7
-                input.form-control(type='password', name='confirmPassword', id='confirmPassword', placeholder='Confirm Password', required)
-        .form-group
-            .col-sm-offset-3.col-sm-7
-                button.btn.btn-primary(type='submit')
-                    i.fa.fa-user-plus
-                    | Signup
+    .login-container.container
+        .panel
+            .panel-body
+                form(method='POST')
+                    legend Create an account
+                    input(type='hidden', name='_csrf', value=_csrf)
+                    .form-group
+                        label(for='username') Username
+                        input.form-control(type='text', name='username', id='username', placeholder='Username', autofocus=true, required)
+                    .form-group
+                        label(for='email') Email
+                        input.form-control(type='email', name='email', id='email', placeholder='Email', required)
+                    .form-group
+                        label(for='password') Password
+                        input.form-control(type='password', name='password', id='password', placeholder='Password', required)
+                    .form-group
+                        label(for='confirmPassword') Confirm Password
+                        input.form-control(type='password', name='confirmPassword', id='confirmPassword', placeholder='Confirm Password', required)
+                    .form-group
+                        small.text-muted By signing up, you agree to the <a href="/">Terms of Service</a>.
+                    button.btn.btn-success(type='submit')
+                        i.fa.fa-user-plus
+                        | Create Account
+
+                .hr-title
+                    span or
+
+                .btn-toolbar.text-center
+                    a.btn.btn-facebook(href='/auth/facebook') Sign in with Facebook
+                    a.btn.btn-twitter(href='/auth/twitter') Sign in with Twitter
+                    a.btn.btn-google(href='/auth/google') Sign in with Google
+
+        p.text-center Already have an account?&nbsp;
+            a(href='/login')
+                strong Log in

@@ -1,15 +1,34 @@
 const mysql = require('mysql');
 const User = require('../models/User');
+const chalk = require('chalk');
 
-// Connection to the database.
-const connection = mysql.createConnection({
-    host: 'localhost',
-    user: process.env.MYSQL_USER,
-    password: process.env.MYSQL_PW,
-    database: 'todo'
+
+/**
+ * Connect to MySQL.
+ */
+let mysqlClient = mysql.createConnection({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
 });
+handleDisconnect(mysqlClient);
 
-connection.connect();
+function handleDisconnect(client) {
+    client.on('error', function (error) {
+        if (!error.fatal) return;
+        if (error.code !== 'PROTOCOL_CONNECTION_LOST') throw err;
+
+        console.error('%s Re-connecting lost MySQL connection: ', chalk.red('✗') + error.stack);
+
+        // NOTE: This assignment is to a variable from an outer scope; this is extremely important
+        // If this said `client =` it wouldn't do what you want. The assignment here is implicitly changed
+        // to `global.mysqlClient =` in node.
+        mysqlClient = mysql.createConnection(client.config);
+        handleDisconnect(mysqlClient);
+        mysqlClient.connect();
+    });
+};
 
 /**
  * GET /
@@ -26,7 +45,7 @@ exports.index = (req, res) => {
  *  Get Todos from the database
  */
 exports.getTodos = (req, res) => {
-    connection.query('SELECT * FROM todoitem', (err, rows) => {
+    mysqlClient.query('SELECT * FROM todoitems WHERE userid = ?', req.user.id, (err, rows) => {
         if (err) {
             console.error(err);
             return;
@@ -37,31 +56,6 @@ exports.getTodos = (req, res) => {
         }
         res.send(data);
     });
-    function resetPassword(done) {
-        User
-            .findOne({passwordResetToken: req.params.token})
-            .where('passwordResetExpires').gt(Date.now())
-            .exec((err, user) => {
-                if (err) {
-                    return next(err);
-                }
-                if (!user) {
-                    req.flash('errors', {msg: 'Password reset token is invalid or has expired.'});
-                    return res.redirect('back');
-                }
-                user.password = req.body.password;
-                user.passwordResetToken = undefined;
-                user.passwordResetExpires = undefined;
-                user.save((err) => {
-                    if (err) {
-                        return next(err);
-                    }
-                    req.logIn(user, (err) => {
-                        done(err, user);
-                    });
-                });
-            });
-    }
 };
 
 /**
@@ -72,8 +66,9 @@ exports.update = (req, res) => {
     let todo = req.body.data;
     let date = new Date(todo.DueDate);
     todo.DueDate = date.toISOString().slice(0, 19).replace('T', ' ');
-    let query = connection.query('UPDATE todoitem SET Title = ?, DueDate = ?, Completed = ?, Priority = ? WHERE Id = ?',
+    let query = mysqlClient.query('UPDATE todoitems SET Title = ?, DueDate = ?, Completed = ?, Priority = ? WHERE Id = ?',
         [todo.Title, todo.DueDate, todo.Completed, todo.Priority, todo.Id]);
+    res.end();
 };
 
 /**
@@ -82,26 +77,25 @@ exports.update = (req, res) => {
  */
 exports.delete = (req, res) => {
     let todo = req.body.data;
-    connection.query("DELETE FROM todoitem WHERE id = ?", todo.Id);
+    mysqlClient.query("DELETE FROM todoitems WHERE id = ?", todo.Id);
+    res.end();
 };
 
 /**
  *  POST /
  *  Add a to-do to the database.
  */
-exports.addTodo = (req) => {
+exports.addTodo = (req, res) => {
     let todo = req.body.data;
     let date = new Date(todo.DueDate);
     todo.DueDate = date.toISOString().slice(0, 19).replace('T', ' ');
-    let now = new Date(Date.now());
-    todo.CreationDate = now.toISOString().slice(0, 19).replace('T', ' ');
 
-    const query = connection.query('INSERT INTO todoitem SET Title = ?, DueDate = ?, Completed = ?, Priority = ?, CreationDate = ?',
-        [todo.Title, todo.DueDate, todo.Completed, todo.Priority, todo.CreationDate], (err, result) => {
+    const query = mysqlClient.query('INSERT INTO todoitems SET Title = ?, DueDate = ?, Completed = ?, Priority = ?, UserId = ?',
+        [todo.Title, todo.DueDate, todo.Completed, todo.Priority, req.user.id], (err, result) => {
             if (err) {
                 console.error(err);
-                return;
             }
+            res.status(200).send(result.insertId.toString());
         });
 };
 

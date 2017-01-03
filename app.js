@@ -2,7 +2,9 @@
  * Module dependencies.
  */
 const express = require('express');
+const _ = require('lodash');
 const compression = require('compression');
+const methodOverride = require('method-override');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
@@ -10,16 +12,15 @@ const chalk = require('chalk');
 const errorHandler = require('errorhandler');
 const lusca = require('lusca');
 const dotenv = require('dotenv');
-const MongoStore = require('connect-mongo')(session);
 const flash = require('express-flash');
 const path = require('path');
-const mongoose = require('mongoose');
 const passport = require('passport');
 const expressValidator = require('express-validator');
 const expressStatusMonitor = require('express-status-monitor');
 const sass = require('node-sass-middleware');
 const multer = require('multer');
 const levenshtein = require('fast-levenshtein');
+
 
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
@@ -46,15 +47,8 @@ const passportConfig = require('./config/passport');
  */
 const app = express();
 
-/**
- * Connect to MongoDB.
- */
-mongoose.Promise = global.Promise;
-mongoose.connect(process.env.MONGODB_URI || process.env.MONGOLAB_URI);
-mongoose.connection.on('error', () => {
-    console.log('%s MongoDB connection error. Please make sure MongoDB is running.', chalk.red('✗'));
-    process.exit();
-});
+const server = require('http').Server(app);
+const io = require('socket.io').listen(server);
 
 /**
  * Express configuration.
@@ -74,27 +68,37 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(expressValidator());
+app.use(methodOverride('_method'));
 app.use(session({
     resave: true,
     saveUninitialized: true,
     secret: process.env.SESSION_SECRET,
-    store: new MongoStore({
-        url: process.env.MONGODB_URI || process.env.MONGOLAB_URI,
-        autoReconnect: true
-    })
 }));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
-// app.use((req, res, next) => {
-//     lusca.csrf()(req, res, next);
-// });
-// app.use(lusca.xframe('SAMEORIGIN'));
-// app.use(lusca.xssProtection(true));
+
+const csrfExclude = ['/addtodo', '/deletetodo', '/updatetodo', '/gettodos'];
 app.use((req, res, next) => {
-    res.locals.user = req.user;
+    // CSRF protection.
+    if (_.includes(csrfExclude, req.path)) {
+        return next();
+    }
+    lusca.csrf()(req, res, next);
+});
+
+// app.use(lusca.csp({/* ... */}));
+app.use(lusca.xframe('SAMEORIGIN'));
+app.use(lusca.p3p('ABCDEF'));
+app.use(lusca.hsts({maxAge: 31536000}));
+app.use(lusca.xssProtection(true));
+
+
+app.use((req, res, next) => {
+    res.locals.user = req.user ? req.user.toJSON() : null;
     next();
 });
+
 app.use((req, res, next) => {
     // After successful login, redirect back to the intended page
     if (!req.user &&
@@ -129,6 +133,7 @@ app.get('/feedback', feedbackController.getFeedback);
 app.post('/feedback', feedbackController.postFeedback);
 app.get('/account', passportConfig.isAuthenticated, userController.getAccount);
 app.post('/account/profile', passportConfig.isAuthenticated, userController.postUpdateProfile);
+app.post('/account/reset/picture', passportConfig.isAuthenticated, userController.postResetPicture);
 app.post('/account/password', passportConfig.isAuthenticated, userController.postUpdatePassword);
 app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
@@ -169,6 +174,21 @@ app.post('/addtodo', passportConfig.isAuthenticated, dashboardController.addTodo
  * Error Handler.
  */
 app.use(errorHandler());
+
+// Production error handler
+if (app.get('env') === 'production') {
+    app.use((err, req, res, next) => {
+        console.error(err.stack);
+        res.sendStatus(err.status || 500);
+    });
+}
+
+io.on('connection', function (socket) {
+    socket.emit('news', {hello: 'world'});
+    socket.on('my other event', function (data) {
+        console.log(data);
+    });
+});
 
 /**
  * Start Express server.

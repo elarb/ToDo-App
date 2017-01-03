@@ -1,73 +1,51 @@
-const bcrypt = require('bcrypt-nodejs');
 const crypto = require('crypto');
-const mongoose = require('mongoose');
+const bcrypt = require('bcrypt-nodejs');
+const bookshelf = require('../config/bookshelf');
 
-const userSchema = new mongoose.Schema({
-    username: {type: String, unique: true},
-    email: String,
-    password: String,
-    passwordResetToken: String,
-    passwordResetExpires: Date,
+let User = bookshelf.Model.extend({
+    tableName: 'Users',
+    hasTimestamps: true,
 
-    facebook: String,
-    twitter: String,
-    google: String,
-    tokens: Array,
+    initialize: function () {
+        this.on('saving', this.hashPassword, this);
+    },
 
-    profile: {
-        name: String,
-        gender: String,
-        country: String,
-        city: String,
-        picture: String
-    }
-}, {timestamps: true});
-
-/**
- * Password hash middleware.
- */
-userSchema.pre('save', function save(next) {
-    const user = this;
-    if (!user.isModified('password')) {
-        return next();
-    }
-    bcrypt.genSalt(10, (err, salt) => {
-        if (err) {
-            return next(err);
+    hashPassword: function (model, attrs, options) {
+        let password = options.patch ? attrs.Password : model.get('Password');
+        if (!password) {
+            return;
         }
-        bcrypt.hash(user.password, salt, null, (err, hash) => {
-            if (err) {
-                return next(err);
-            }
-            user.password = hash;
-            next();
+        return new Promise(function (resolve, reject) {
+            bcrypt.genSalt(10, function (err, salt) {
+                bcrypt.hash(password, salt, null, function (err, hash) {
+                    if (options.patch) {
+                        attrs.Password = hash;
+                    }
+                    model.set('Password', hash);
+                    resolve();
+                });
+            });
         });
-    });
+    },
+
+    comparePassword: function (password, done) {
+        const model = this;
+        bcrypt.compare(password, model.get('Password'), function (err, isMatch) {
+            done(err, isMatch);
+        });
+    },
+
+    hidden: ['Password', 'PasswordResetToken', 'PasswordResetExpires'],
+
+    virtuals: {
+        gravatar: function () {
+            if (!this.get('Email')) {
+                return 'https://gravatar.com/avatar/?s=200&d=retro';
+            }
+            const md5 = crypto.createHash('md5').update(this.get('Email')).digest('hex');
+            return 'https://gravatar.com/avatar/' + md5 + '?s=200&d=retro';
+        }
+    }
 });
-
-/**
- * Helper method for validating user's password.
- */
-userSchema.methods.comparePassword = function comparePassword(candidatePassword, cb) {
-    bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
-        cb(err, isMatch);
-    });
-};
-
-/**
- * Helper method for getting user's gravatar.
- */
-userSchema.methods.gravatar = function gravatar(size) {
-    if (!size) {
-        size = 200;
-    }
-    if (!this.email) {
-        return `https://gravatar.com/avatar/?s=${size}&d=retro`;
-    }
-    const md5 = crypto.createHash('md5').update(this.email).digest('hex');
-    return `https://gravatar.com/avatar/${md5}?s=${size}&d=retro`;
-};
-
-const User = mongoose.model('User', userSchema);
 
 module.exports = User;
