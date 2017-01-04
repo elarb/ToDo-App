@@ -15,7 +15,6 @@ exports.up = function (knex, Promise) {
                 table.string('Twitter');
                 table.string('Google');
                 table.timestamps();
-                table.onDelete('CASCADE');
             }
         ),
         // knex.schema.createTable('todolist', function (table) {
@@ -31,7 +30,7 @@ exports.up = function (knex, Promise) {
                 table.boolean('Completed');
                 table.date('CompletionDate');
                 table.timestamps();
-                table.integer('UserID').unsigned().index().references('id').inTable('Users');
+                table.integer('UserID').unsigned().index().references('id').inTable('Users').onDelete('CASCADE');
             }
         )
     ]);
