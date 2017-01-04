@@ -111,12 +111,12 @@ exports.postSignup = (req, res, next) => {
         if (suggestionMsg !== '') {
             req.flash('info', {msg: 'Suggestion: ' + suggestionMsg});
         }
-        return res.render('/signup', {email: req.body.email});
+        return res.render('account/signup', {email: req.body.email});
     }
 
     if (errors) {
         req.flash('errors', errors);
-        return res.render('/signup', {email: req.body.email});
+        return res.render('account/signup', {email: req.body.email});
     }
 
     new User({
@@ -125,14 +125,14 @@ exports.postSignup = (req, res, next) => {
     }).save()
         .then(function (user) {
             req.logIn(user, function (err) {
-                res.redirect('/');
+                res.redirect('/dashboard');
             });
         })
         .catch(function (err) {
             console.log(err);
             if (err.code === 'ER_DUP_ENTRY' || err.code === '23505') {
                 req.flash('error', {msg: 'The email-address you have entered is already associated with another account.'});
-                return res.render('/signup');
+                return res.render('account/signup');
             }
         });
 };
