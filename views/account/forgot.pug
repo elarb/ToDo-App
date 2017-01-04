@@ -7,6 +7,7 @@ block content
                 form(method='POST')
                     legend Forgot Password
                     input(type='hidden', name='_csrf', value=_csrf)
+                    .form-group
                         p Please enter your e-mail below and check your mail for password reset instructions.
                         label.control-label(for='email') Email
                         input.form-control(type='email', name='email', id='email', placeholder='E-mail', autofocus,  required)

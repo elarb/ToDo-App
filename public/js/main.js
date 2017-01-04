@@ -11,7 +11,7 @@ let main = (data) => {
     //Class for a TodoItem
     class TodoItem {
         constructor(id, title, date, priority, completed) {
-            this.Id = id;
+            this.id = id;
             this.Title = title;
             this.DueDate = date;
             this.Priority = priority;
@@ -70,10 +70,18 @@ let main = (data) => {
             $.post("/addtodo", {
                 "data": newToDo
             }, function (data) {
-                newToDo.Id = parseInt(data);
+                handleAdd(data);
+            });
+
+            let handleAdd = function (data) {
+                newToDo.id = parseInt(data);
+                console.log('id assigned = ' + parseInt(data));
                 toDos.push(newToDo);
                 addTodo(newToDo);
-            });
+            };
+
+            //handleAdd();
+
             //reset value of the input fields.
             $textInput.val("");
             $dateInput.val("");
@@ -127,8 +135,10 @@ let main = (data) => {
             .append($todoDateInput)
             .append($todoDateInput)
             .append($deleteButton);
-        $content.attr("Id", todo.Id);
+        $content.attr("Id", todo.id);
         $content.addClass("todo-item");
+        console.log('Id that gets added to the todo: ' + todo.id);
+        console.log(todo);
 
         if (todo.Completed) {
             $content.hide();
@@ -186,21 +196,15 @@ let main = (data) => {
             $content.remove();
             //removing from the list of todos
             toDos = toDos.filter((el) => {
-                return el.Id !== todo.Id;
+                return el.id !== todo.id;
             });
         });
     };
 
     //sort by date
     $sortDateButton.on("click", () => {
-        //TODO: improve this block of code
-        // for (let i = 0; i < toDos.length; i++) {
-        //     let ref = "#" + toDos[i].Id;
-        //     $(ref).remove();
-        // }
-
         toDos.forEach(function (TodoItem) {
-            $('#' + TodoItem.Id).remove();
+            $('#' + TodoItem.id).remove();
         });
 
         toDos.sort((a, b) => {
@@ -215,14 +219,8 @@ let main = (data) => {
 
     //sort by descriptions
     $sortDescrButton.on("click", () => {
-        //TODO: improve this block of code
-        // for (let i = 0; i < toDos.length; i++) {
-        //     let ref = "#" + toDos[i].Id;
-        //     $(ref).remove();
-        // }
-
         toDos.forEach(function (TodoItem) {
-            $('#' + TodoItem.Id).remove();
+            $('#' + TodoItem.id).remove();
         });
 
         toDos.sort((a, b) => {
@@ -238,7 +236,7 @@ let main = (data) => {
     // removes the to-do from the list and adds it again with the updated state
     let updateToDoList = (todo) => {
         toDos = toDos.filter((el) => {
-            return el.Id !== todo.Id;
+            return el.id !== todo.id;
         });
         toDos.push(todo);
     };
