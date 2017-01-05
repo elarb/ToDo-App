@@ -1,10 +1,15 @@
-# To Do
+![](http://i.imgur.com/NEJ884H.png)
+
+To Do
+=======================
+
 
 A To Do App for Children.
 
 **Live Demo**: 
 
-## Features
+Features
+--------
 
 
 - **Local Authentication** using Email and Password
@@ -27,7 +32,8 @@ A To Do App for Children.
  - Delete Account
 - CSRF protection
 
-## Soon:
+Soon:
+--------
 
 
 - An even better password check
@@ -65,6 +71,7 @@ yarn install
 node app.js
 ```
 
-## Contributing
+Contributing
+---------------
 
 Fork the project, create a new branch, make your changes, and open a pull request.
