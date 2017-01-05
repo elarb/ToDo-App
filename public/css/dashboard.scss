@@ -55,6 +55,12 @@ body {
     min-width: 250px;
   }
 
+  button {
+    background-color: inherit;
+    outline: none;
+    border: none;
+  }
+
 }
 
 .content input {
