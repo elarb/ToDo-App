@@ -16,19 +16,25 @@ block content
                     .form-group
                         label(for='confirmPassword') Confirm Password
                         input.form-control(type='password', name='confirmPassword', id='confirmPassword', placeholder='Confirm Password', required)
-                    .form-group
-                        small.text-muted By signing up, you agree to the <a href="/">Terms of Service</a>.
+                    //.form-group
+                    //    small.text-muted By signing up, you agree to the <a href="/">Terms of Service</a>.
                     button.btn.btn-success(type='submit')
                         i.fa.fa-user-plus
-                        | Create Account
+                        |  Create Account
 
                 .hr-title
                     span or
 
                 .btn-toolbar.text-center
-                    a.btn.btn-facebook(href='/auth/facebook') Sign in with Facebook
-                    a.btn.btn-twitter(href='/auth/twitter') Sign in with Twitter
-                    a.btn.btn-google(href='/auth/google') Sign in with Google
+                    a.btn.btn-facebook.btn-social(href='/auth/facebook')
+                        i.fa.fa-facebook
+                        | Sign in with Facebook
+                    a.btn.btn-twitter.btn-social(href='/auth/twitter')
+                        i.fa.fa-twitter
+                        |  Sign in with Twitter
+                    a.btn.btn-google.btn-social(href='/auth/google')
+                        i.fa.fa-google-plus
+                        |  Sign in with Google
 
         p.text-center Already have an account?&nbsp;
             a(href='/login')

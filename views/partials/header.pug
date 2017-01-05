@@ -8,11 +8,11 @@
                 span.icon-bar
             if !user
                 a.navbar-brand(href='/')
-                    img(src='/ms-icon-310x310.png')
+                    img(src='/img/favicon-32x32.png')
                     |  To Do
             else
                 a.navbar-brand(href='/dashboard')
-                    img(src='/ms-icon-310x310.png')
+                    img(src='/img/favicon-32x32.png')
                     |  To Do
         .collapse.navbar-collapse
             ul.nav.navbar-nav.navbar-right
@@ -28,11 +28,14 @@
                                 img(src=user.Picture)
                             else
                                 img(src=user.gravatar)
-                            span= user.Name || user.Email || user.Id
+                            span= user.Name || user.Email || user.id
                             i.caret
                         ul.dropdown-menu
                             li
-                                a(href='/account') My Account
+                                a(href='/dashboard') Dashboard
+                            li.divider
+                            li
+                                a(href='/account') Account
                             li.divider
                             li
                                 a(href='/logout') Logout
