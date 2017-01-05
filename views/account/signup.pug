@@ -1,5 +1,9 @@
 extends ../layout
 
+block css
+    link(rel='stylesheet', href='/css/main.css')
+    link(rel='stylesheet', href='/css/lib/strengthify.css')
+
 block content
     .login-container.container
         .panel
@@ -12,7 +16,7 @@ block content
                         input.form-control(type='email', name='email', id='email', placeholder='Email', autofocus=true, required)
                     .form-group
                         label(for='password') Password
-                        input.form-control(type='password', name='password', id='password', placeholder='Password', required)
+                        input.form-control(class='password-field',type='password', name='password', id='password', placeholder='Password', required)
                     .form-group
                         label(for='confirmPassword') Confirm Password
                         input.form-control(type='password', name='confirmPassword', id='confirmPassword', placeholder='Confirm Password', required)
@@ -41,3 +45,7 @@ block content
         p.text-center Already have an account?&nbsp;
             a(href='/login')
                 strong Log in
+
+block scripts
+    script(src='/js/lib/jquery.strengthify.js')
+    script(src='/js/pass-meter.js')

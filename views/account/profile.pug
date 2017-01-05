@@ -1,5 +1,8 @@
 extends ../layout
 
+block css
+    link(rel='stylesheet', href='/css/main.css')
+
 block content
     .container
         .panel
@@ -102,3 +105,6 @@ block content
                             button.btn.btn-danger(type='submit')
                                 i.fa.fa-trash
                                 |  Delete my account
+
+block scripts
+    script(src='/js/lib/crs.min.js')

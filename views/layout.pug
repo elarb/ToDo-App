@@ -8,8 +8,7 @@ html
         meta(name='theme-color' content='#4DA5F4')
         meta(name='csrf-token', content=_csrf)
         title #{title} - To Do
-        link(rel='stylesheet', href='/css/main.css')
-        script(src='https://www.google.com/recaptcha/api.js')
+        block css
 
     body
         include partials/header
@@ -21,8 +20,8 @@ html
         include partials/footer
 
         script(src='/js/lib/jquery-3.1.1.js')
-        script(src='/js/lib/crs.min.js')
         script(src='/js/lib/bootstrap.min.js')
+        block scripts
 
         // Google Analytics: change UA-XXXXX-X to be your site's ID
         script.

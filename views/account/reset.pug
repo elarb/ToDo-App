@@ -1,5 +1,9 @@
 extends ../layout
 
+block css
+    link(rel='stylesheet', href='/css/main.css')
+    link(rel='stylesheet', href='/css/lib/strengthify.css')
+
 block content
     .container
         .panel
@@ -9,7 +13,7 @@ block content
                     input(type='hidden', name='_csrf', value=_csrf)
                     .form-group
                         label(for='password') New Password
-                        input.form-control(type='password', name='password', id='password', placeholder='New password', autofocus=true, required)
+                        input.form-control(class='password-field',type='password', name='password', id='password', placeholder='New password', autofocus=true, required)
                     .form-group
                         label(for='confirm') Confirm Password
                         input.form-control(type='password', name='confirm', id='confirm', placeholder='Confirm password', required)
@@ -17,3 +21,7 @@ block content
                         button.btn.btn-primary.btn-reset(type='submit')
                             i.fa.fa-keyboard-o
                             | Change Password
+
+block scripts
+    script(src='/js/lib/jquery.strengthify.js')
+    script(src='/js/pass-meter.js')
