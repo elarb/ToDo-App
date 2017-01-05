@@ -10,7 +10,8 @@ let mysqlClient = mysql.createConnection({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME
+    database: process.env.DB_NAME,
+    dateStrings: 'DATE'
 });
 handleDisconnect(mysqlClient);
 
@@ -28,7 +29,7 @@ function handleDisconnect(client) {
         handleDisconnect(mysqlClient);
         mysqlClient.connect();
     });
-};
+}
 
 /**
  * GET /
@@ -65,9 +66,10 @@ exports.getTodos = (req, res) => {
 exports.update = (req, res) => {
     let todo = req.body.data;
     let date = new Date(todo.DueDate);
-    todo.DueDate = date.toISOString().slice(0, 19).replace('T', ' ');
-    let query = mysqlClient.query('UPDATE todoitems SET Title = ?, DueDate = ?, Completed = ?, Priority = ? WHERE Id = ?',
-        [todo.Title, todo.DueDate, todo.Completed, todo.Priority, todo.Id]);
+    // console.log(date.toISOString().slice(0, 19).replace('T', ' '));
+    // todo.DueDate = date.toISOString().slice(0, 19).replace('T', ' ');
+    mysqlClient.query('UPDATE todoitems SET Title = ?, DueDate = ?, Completed = ?, Priority = ? WHERE Id = ?',
+        [todo.Title, date, todo.Completed, todo.Priority, todo.id]);
     res.end();
 };
 
@@ -77,7 +79,7 @@ exports.update = (req, res) => {
  */
 exports.delete = (req, res) => {
     let todo = req.body.data;
-    mysqlClient.query("DELETE FROM todoitems WHERE id = ?", todo.Id);
+    mysqlClient.query("DELETE FROM todoitems WHERE id = ?", todo.id);
     res.end();
 };
 
@@ -90,7 +92,7 @@ exports.addTodo = (req, res) => {
     let date = new Date(todo.DueDate);
     todo.DueDate = date.toISOString().slice(0, 19).replace('T', ' ');
 
-    const query = mysqlClient.query('INSERT INTO todoitems SET Title = ?, DueDate = ?, Completed = ?, Priority = ?, UserId = ?',
+    mysqlClient.query('INSERT INTO todoitems SET Title = ?, DueDate = ?, Completed = ?, Priority = ?, UserId = ?',
         [todo.Title, todo.DueDate, todo.Completed, todo.Priority, req.user.id], (err, result) => {
             if (err) {
                 console.error(err);
