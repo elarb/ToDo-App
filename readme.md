@@ -71,6 +71,10 @@ yarn install
 
 # Then simply start your app
 node app.js
+
+# Additionally, you should also create a MySQL Database and add it's details to your .env file
+# You can find a template for this file in the repository
+CREATE DATABASE todo_db;
 ```
 
 Contributing
