@@ -4,7 +4,7 @@ To Do
 =======================
 [![Build Status](https://travis-ci.com/elarb/ToDo-App.svg?token=T3DvYLyn6TfxmknUsrTx&branch=master)](https://travis-ci.com/elarb/ToDo-App)
 
-A To Do App targeted at Children.
+A To-Do Web App targeted at Children.
 
 **Live Demo**: soon
 
@@ -18,19 +18,21 @@ Features
 - Password strength check using Dropbox [zxcvbn](https://github.com/dropbox/zxcvbn)
 - Flash notifications
 - MVC Project Structure
-- Node.js clusters support
 - Sass stylesheets (auto-compiled via middleware)
 - Bootstrap 3 
 - Contact Form powered by Sendgrid
 - **Account Management**
- - Gravatar
- - Profile Details
- - Change Password
- - Forgot Password
- - Reset Password
- - Link multiple OAuth strategies to one account
- - Delete Account
-- CSRF protection
+    - Gravatar
+    - Profile Details
+    - Change Password
+    - Forgot Password
+    - Reset Password
+    - Link multiple OAuth strategies to one account
+    - Delete Account
+- **Protection**
+    - CSRF
+    - XSS
+    - SQL-injection
 
 Soon:
 --------
