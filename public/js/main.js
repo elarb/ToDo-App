@@ -1,12 +1,23 @@
 let main = (data) => {
 
     // FIELDS
-    let toDos = data;
     const $inputButton = $("#add-button");
     const $sortDateButton = $("#sort-button-date");
     const $sortDescrButton = $("#sort-button-descr");
     const $datePicker = $("#date-input");
     const today = new Date().toISOString().split('T')[0];
+
+    let toDos = data.map((todo) => {
+        return {
+            Completed: todo.Completed,
+            CompletionDate: todo.CompletionDate,
+            Description: todo.Description,
+            DueDate: todo.DueDate,
+            Priority: todo.Priority,
+            Title: todo.Title,
+            id: todo.id,
+        }
+    });
 
     //Class for a TodoItem
     class TodoItem {
@@ -16,14 +27,6 @@ let main = (data) => {
             this.DueDate = date;
             this.Priority = priority;
             this.Completed = completed;
-        }
-
-        togglePriority() {
-            this.Priority = this.Priority === 3 ? 1 : this.Priority = this.Priority === 2 ? 3 : 2;
-        }
-
-        toggleCompleted() {
-            this.Completed = this.Completed === 1 ? 0 : 1;
         }
     }
 
@@ -75,7 +78,6 @@ let main = (data) => {
 
             let handleAdd = function (data) {
                 newToDo.id = parseInt(data);
-                console.log('id assigned = ' + parseInt(data));
                 toDos.push(newToDo);
                 addTodo(newToDo);
             };
@@ -94,7 +96,7 @@ let main = (data) => {
 
     let addTodo = (todo) => {
         let $doneButton = $('<button>').addClass("doneButton");
-        if (todo.Completed === 0) {
+        if (todo.Completed == 0) {
             $doneButton.text("Done");
         } else {
             $doneButton.text("Undo");
@@ -119,6 +121,7 @@ let main = (data) => {
         $todoDateInput.addClass("dateField");
         $todoDateInput.val(todo.DueDate);
         $todoDateInput.attr('min', today);
+
         if (todo.DueDate < today) {
             $todoDateInput.attr("overdue", true);
         } else {
@@ -137,16 +140,14 @@ let main = (data) => {
             .append($deleteButton);
         $content.attr("Id", todo.id);
         $content.addClass("todo-item");
-        console.log('Id that gets added to the todo: ' + todo.id);
-        console.log(todo);
 
-        if (todo.Completed) {
+        if (todo.Completed == 0) {
             $content.hide();
-            $(".done").append($content);
+            $(".todos").append($content);
             $content.fadeIn();
         } else {
             $content.hide();
-            $(".todos").append($content);
+            $(".done").append($content);
             $content.fadeIn();
         }
 
