@@ -2,11 +2,11 @@
 
 To Do
 =======================
+[![Build Status](https://travis-ci.com/elarb/ToDo-App.svg?token=T3DvYLyn6TfxmknUsrTx&branch=master)](https://travis-ci.com/elarb/ToDo-App)
 
+A To Do App targeted at Children.
 
-A To Do App for Children.
-
-**Live Demo**: 
+**Live Demo**: soon
 
 Features
 --------
