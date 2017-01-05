@@ -16,6 +16,8 @@ block content
                     .form-group
                         label(for='confirmPassword') Confirm Password
                         input.form-control(type='password', name='confirmPassword', id='confirmPassword', placeholder='Confirm Password', required)
+                    .form-group
+                        .g-recaptcha(data-sitekey='== Your site Key ==')
                     //.form-group
                     //    small.text-muted By signing up, you agree to the <a href="/">Terms of Service</a>.
                     button.btn.btn-success(type='submit')
