@@ -58,7 +58,7 @@ exports.postLogin = (req, res, next) => {
             if (err) {
                 return next(err);
             }
-            req.flash('success', {msg: 'Welcome back!'});
+            req.flash('success', {msg: 'Welcome!'});
             res.redirect('/dashboard');
         });
     })(req, res, next);
@@ -220,7 +220,6 @@ exports.postUpdatePassword = (req, res, next) => {
 
     user.fetch().then(function (user) {
         req.flash('success', {msg: 'Your password has been changed.'});
-
         res.redirect('/account');
     });
 };
