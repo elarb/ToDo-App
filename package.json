@@ -4,7 +4,10 @@
   "description": "A ToDo Application for Children",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/elarb/ToDo-App/"
+  },
+  "bugs": {
+    "url": "https://github.com/elarb/ToDo-App/issues"
   },
   "author": "E Ait Larbi & D Happel",
   "license": "MIT",
