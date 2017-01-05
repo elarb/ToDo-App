@@ -34,6 +34,7 @@ A To Do App for Children.
 - Anti Cracking / Bots (**Captcha**)
 - Admin Panel
 - Selecting themes
+- Translation
 
 Prerequisites
 -------------
