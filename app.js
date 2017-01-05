@@ -72,7 +72,7 @@ app.use(methodOverride('_method'));
 app.use(session({
     resave: true,
     saveUninitialized: true,
-    secret: process.env.SESSION_SECRET,
+    secret: process.env.SESSION_SECRET
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -88,10 +88,10 @@ app.use(flash());
 // });
 //
 // // app.use(lusca.csp({/* ... */}));
-// app.use(lusca.xframe('SAMEORIGIN'));
-// app.use(lusca.p3p('ABCDEF'));
-// app.use(lusca.hsts({maxAge: 31536000}));
-// app.use(lusca.xssProtection(true));
+app.use(lusca.xframe('SAMEORIGIN'));
+app.use(lusca.p3p('ABCDEF'));
+app.use(lusca.hsts({maxAge: 31536000}));
+app.use(lusca.xssProtection(true));
 
 
 app.use((req, res, next) => {
@@ -183,10 +183,16 @@ if (app.get('env') === 'production') {
     });
 }
 
+// This will handle 404 requests.
+// TODO: Needs to send a custom 404 page.
+app.use("*", function (req, res) {
+    res.status(404).send("404");
+});
+
 io.on('connection', function (socket) {
     socket.emit('news', {hello: 'world'});
     socket.on('my other event', function (data) {
-        console.log(data);
+        console.log('io connection: %s', data);
     });
 });
 
