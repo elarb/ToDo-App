@@ -21,8 +21,9 @@ Features
 - Password strength check using Dropbox [zxcvbn](https://github.com/dropbox/zxcvbn)
 - Flash notifications
 - MVC Project Structure
+- Templating using Pug (ex-Jade)
 - Sass stylesheets (auto-compiled via middleware)
-- Bootstrap 3 
+- Bootstrap 3 (**Mobile Friendly**)
 - Contact Form powered by Sendgrid
 - **Account Management**
     - Gravatar
@@ -40,8 +41,7 @@ Features
 Soon:
 --------
 
-
-- An even better password check
+- Better password check
 - Anti Cracking / Bots (**Captcha**)
 - Admin Panel
 - Selecting themes
