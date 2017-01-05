@@ -2,57 +2,18 @@
 @import "lib/bootstrap/bootstrap";
 @import "lib/font-awesome/font-awesome";
 @import "themes/default/default";
-@import url(https://fonts.googleapis.com/css?family=Bangers);
+@import url('https://fonts.googleapis.com/css?family=Indie+Flower');
 
 // Scaffolding
 // -------------------------
 
-html {
-  position: relative;
-  height: 100%;
-}
-
 body {
-  margin-bottom: 75px;
-  //height: 85%;
+
+  background-color: #6b92b9;
 }
 
 main {
   background: url("../img/yellowpattern.png") repeat;
-  padding: 40px;
-  min-height: 100%;
-}
-
-footer {
-  height: 45px;
-  line-height: 45px;
-  margin-top: 1.5%;
-
-  p, ul {
-    margin-bottom: 0;
-  }
-}
-
-// Input Fields
-// -------------------------
-
-textarea {
-  resize: vertical;
-}
-
-// Navbar
-// -------------------------
-
-.navbar-nav img {
-  width: 30px;
-  height: 30px;
-  margin: -15px 15px -15px;
-}
-
-.navbar-brand img {
-  display: inline-block;
-  width: 30px;
-  height: 30px;
 }
 
 // Panels
@@ -78,100 +39,3 @@ textarea {
   font-size: 18px;
   color: #424242;
 }
-
-// Alerts
-// -------------------------
-
-.alert {
-  margin-top: 20px;
-}
-
-// Thumbnails
-// -------------------------
-
-.thumbnail {
-  padding: 0;
-  border-radius: 0;
-  box-shadow: 0 0 5px #ccc, inset 0 0 0 #000;
-}
-
-body {
-  font-family: 'Bangers', sans-serif;
-  background-color: #6b92b9;
-}
-
-.header {
-  background-color: #00b3ee;
-  min-height: 10%;
-}
-
-.logo {
-  font-style: italic;
-  font-size: 3em !important;
-  color: #b33;
-  float: left;
-  width: 570px;
-  height: 47px;
-  position: relative;
-}
-
-.button-secondary {
-  background: rgb(66, 184, 221);
-}
-
-.content {
-  padding: 30px 10px 30px 10px;
-  border-radius: 0 5px 5px 5px;
-  background: #F9E933;
-}
-
-#todos-content #todos-done {
-  padding-bottom: 50px;
-}
-
-.todo-input {
-  margin-bottom: 15px;
-}
-
-.todo-input * {
-  margin-right: 15px;
-}
-
-.deleteButton {
-  color: #bb3333;
-}
-
-.importanceButton[important="3"] {
-  color: orangered;
-}
-
-.importanceButton[important="2"] {
-  color: deepskyblue;
-}
-
-.dateField[overdue="true"] {
-  color: orangered;
-}
-
-.descriptionField {
-  background-color: inherit;
-}
-
-.dateField {
-  background-color: inherit;
-}
-
-.content * {
-  margin-left: 15px;
-  margin-top: 10px;
-}
-
-.content .descriptionField {
-  min-width: 300px;
-}
-
-input {
-  outline: none;
-  border: none;
-}
-

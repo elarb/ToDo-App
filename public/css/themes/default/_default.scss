@@ -1,5 +1,77 @@
 @import "../../lib/bootstrap-social";
 
+// Scaffolding
+// -------------------------
+
+html {
+  position: relative;
+  height: 100%;
+}
+
+body {
+  margin-bottom: 75px;
+  height: 85%;
+  font-family: 'Indie Flower', sans-serif;
+}
+
+main {
+  padding: 40px;
+  min-height: 100%;
+}
+
+footer {
+  height: 45px;
+  line-height: 45px;
+  margin-top: 1.5%;
+
+  p, ul {
+    margin-bottom: 0;
+  }
+}
+
+// Input Fields
+// -------------------------
+
+textarea {
+  resize: vertical;
+}
+
+// Navbar
+// -------------------------
+
+.navbar-nav img {
+  width: 30px;
+  height: 30px;
+  margin: -15px 15px -15px;
+}
+
+.navbar-brand img {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+}
+
+// Alerts
+// -------------------------
+
+.alert {
+  margin-top: 20px;
+}
+
+// Thumbnails
+// -------------------------
+
+.thumbnail {
+  padding: 0;
+  border-radius: 0;
+  box-shadow: 0 0 5px #ccc, inset 0 0 0 #000;
+}
+
+.header {
+  background-color: #00b3ee;
+  min-height: 10%;
+}
+
 // Buttons
 // -------------------------
 
