@@ -15,7 +15,7 @@ let main = (data) => {
             DueDate: todo.DueDate,
             Priority: todo.Priority,
             Title: todo.Title,
-            id: todo.id,
+            id: todo.id
         }
     });
 
