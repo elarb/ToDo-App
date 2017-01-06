@@ -139,8 +139,8 @@ exports.postSignup = (req, res, next) => {
                 .catch(function (err) {
                     console.log(err);
                     if (err.code === 'ER_DUP_ENTRY' || err.code === '23505') {
-                        req.flash('error', {msg: 'The email-address you have entered is already associated with another account.'});
-                        return res.redirect('/signup');
+                        req.flash('errors', {msg: 'The email-address you have entered is already associated with another account.'});
+                        res.redirect('/signup');
                     }
                 });
         })
@@ -192,7 +192,7 @@ exports.postUpdateProfile = (req, res, next) => {
         res.redirect('/account');
     }).catch(function (err) {
         if (err.code === 'ER_DUP_ENTRY') {
-            req.flash('error', {msg: 'The email address you have entered is already associated with another account.'});
+            req.flash('errors', {msg: 'The email address you have entered is already associated with another account.'});
         }
     });
 
@@ -283,7 +283,7 @@ exports.getOauthUnlink = (req, res, next) => {
                     user.set('Twitter', null);
                     break;
                 default:
-                    req.flash('error', {msg: 'Invalid OAuth Provider'});
+                    req.flash('errors', {msg: 'Invalid OAuth Provider'});
                     return res.redirect('/account');
             }
             user.save(user.changed, {patch: true}).then(function () {
@@ -306,7 +306,7 @@ exports.getReset = (req, res) => {
         .fetch()
         .then(function (user) {
             if (!user) {
-                req.flash('error', {msg: 'Password reset token is invalid or has expired.'});
+                req.flash('errors', {msg: 'Password reset token is invalid or has expired.'});
                 return res.redirect('/forgot');
             }
             res.render('account/reset', {
@@ -352,7 +352,7 @@ exports.postReset = (req, res, next) => {
                 .fetch()
                 .then(function (user) {
                     if (!user) {
-                        req.flash('error', {msg: 'Password reset token is invalid or has expired.'});
+                        req.flash('errors', {msg: 'Password reset token is invalid or has expired.'});
                         return res.redirect('back');
                     }
                     user.set('Password', req.body.password);
@@ -433,7 +433,7 @@ exports.postForgot = (req, res, next) => {
                 .fetch()
                 .then(function (user) {
                     if (!user) {
-                        req.flash('error', {msg: 'The email address ' + req.body.email + ' is not associated with any account.'});
+                        req.flash('errors', {msg: 'The email address ' + req.body.email + ' is not associated with any account.'});
                         return res.redirect('/forgot');
                     }
                     user.set('PasswordResetToken', token);

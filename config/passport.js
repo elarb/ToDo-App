@@ -69,7 +69,7 @@ passport.use(new FacebookStrategy({
             .fetch()
             .then(function (user) {
                 if (user) {
-                    req.flash('error', {msg: 'There is already an existing account linked with Facebook that belongs to you.'});
+                    req.flash('errors', {msg: 'There is already an existing account linked with Facebook that belongs to you.'});
                     return done(null);
                 }
                 new User({id: req.user.id})
@@ -96,7 +96,7 @@ passport.use(new FacebookStrategy({
                     .fetch()
                     .then(function (user) {
                         if (user) {
-                            req.flash('error', {msg: user.get('Email') + ' is already associated with another account.'});
+                            req.flash('errors', {msg: user.get('Email') + ' is already associated with another account.'});
                             return done();
                         }
                         user = new User();
@@ -126,7 +126,7 @@ passport.use(new TwitterStrategy({
             .fetch()
             .then(function (user) {
                 if (user) {
-                    req.flash('error', {msg: 'There is already an existing account linked with your Twitter account.'});
+                    req.flash('errors', {msg: 'There is already an existing account linked with your Twitter account.'});
                     return done(null);
                 }
                 new User({id: req.user.id})
@@ -181,7 +181,7 @@ passport.use(new GoogleStrategy({
             .fetch()
             .then(function (user) {
                 if (user) {
-                    req.flash('error', {msg: 'There is already an existing account linked with Google that belongs to you.'});
+                    req.flash('errors', {msg: 'There is already an existing account linked with Google that belongs to you.'});
                     return done(null);
                 }
                 new User({id: req.user.id})
@@ -208,7 +208,7 @@ passport.use(new GoogleStrategy({
                     .fetch()
                     .then(function (user) {
                         if (user) {
-                            req.flash('error', {msg: user.get('Email') + ' is already associated with another account.'});
+                            req.flash('errors', {msg: user.get('Email') + ' is already associated with another account.'});
                             return done();
                         }
                         user = new User();
