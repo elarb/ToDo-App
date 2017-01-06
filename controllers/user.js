@@ -132,7 +132,7 @@ exports.postSignup = (req, res, next) => {
             console.log(err);
             if (err.code === 'ER_DUP_ENTRY' || err.code === '23505') {
                 req.flash('error', {msg: 'The email-address you have entered is already associated with another account.'});
-                return res.render('account/signup');
+                return res.redirect('/signup');
             }
         });
 };
