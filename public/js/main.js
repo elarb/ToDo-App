@@ -116,6 +116,7 @@ let main = (data) => {
         let $todoTextInput = $("<input>").attr("type", "text");
         $todoTextInput.addClass("descriptionField");
         $todoTextInput.val(todo.Title);
+        $todoTextInput.attr({'autocorrect': 'off', 'spellcheck': 'false'});
 
         let $todoDateInput = $("<input>").attr("type", "date");
         $todoDateInput.addClass("dateField");
@@ -279,6 +280,12 @@ let main = (data) => {
         $(".today-footer").append(par);
     })();
 };
+
+const socket = io.connect('http://localhost:4000');
+socket.on('news', function (data) {
+    console.log(data);
+    socket.emit('my other event', {my: 'data'});
+});
 
 $(document).ready(function () {
     $.get("/gettodos", function (data) {
