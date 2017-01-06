@@ -4,7 +4,7 @@
 const express = require('express');
 const _ = require('lodash');
 const compression = require('compression');
-const methodOverride = require('method-override');
+const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
@@ -20,6 +20,7 @@ const expressStatusMonitor = require('express-status-monitor');
 const sass = require('node-sass-middleware');
 const multer = require('multer');
 const levenshtein = require('fast-levenshtein');
+const cool = require('cool-ascii-faces');
 
 
 /**
@@ -47,8 +48,7 @@ const passportConfig = require('./config/passport');
  */
 const app = express();
 
-const server = require('http').Server(app);
-const io = require('socket.io').listen(server);
+const io = require('socket.io')(4000);
 
 /**
  * Express configuration.
@@ -68,26 +68,26 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(expressValidator());
-app.use(methodOverride('_method'));
+app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(session({
     resave: true,
     saveUninitialized: true,
-    secret: process.env.SESSION_SECRET
+    secret: process.env.SESSION_SECRET,
 }));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
-// const csrfExclude = ['/addtodo', '/deletetodo', '/updatetodo', '/gettodos'];
-// app.use((req, res, next) => {
-//     // CSRF protection.
-//     if (_.includes(csrfExclude, req.path)) {
-//         return next();
-//     }
-//     lusca.csrf()(req, res, next);
-// });
-//
-// // app.use(lusca.csp({/* ... */}));
+const csrfExclude = ['/addtodo', '/deletetodo', '/updatetodo', '/gettodos'];
+app.use((req, res, next) => {
+    // CSRF protection.
+    if (_.includes(csrfExclude, req.path)) {
+        return next();
+    }
+    lusca.csrf()(req, res, next);
+});
+
+// app.use(lusca.csp({/* ... */}));
 app.use(lusca.xframe('SAMEORIGIN'));
 app.use(lusca.p3p('ABCDEF'));
 app.use(lusca.hsts({maxAge: 31536000}));
@@ -164,11 +164,28 @@ app.post('/updatetodo', passportConfig.isAuthenticated, dashboardController.upda
 app.post('/deletetodo', passportConfig.isAuthenticated, dashboardController.delete);
 app.post('/addtodo', passportConfig.isAuthenticated, dashboardController.addTodo);
 
+app.get('/countme', (req, res) => {
+    const session = req.session;
+    if (session.views) {
+        session.views++;
+        res.send('You have been here ' + session.views + ' times (last visit: ' + session.lastVisit + ')');
+        session.lastVisit = new Date().toLocaleDateString();
+    } else {
+        session.views = 1;
+        session.lastVisit = new Date().toLocaleDateString();
+        res.send('This is your first visit!');
+    }
+});
+
+//Easter Egg
+app.get('/cool', function (request, response) {
+    response.send(cool());
+});
+
 /**
  * Dashboard routes levenshtein
  */
 //TODO: Add levenshtein's algorithm to redirect almost valid links.
-
 
 /**
  * Error Handler.
@@ -184,16 +201,15 @@ if (app.get('env') === 'production') {
 }
 
 // This will handle 404 requests.
-// TODO: Needs to send a custom 404 page.
-app.use("*", function (req, res) {
-    res.status(404).send("404");
+app.use(function (req, res) {
+    res.status(400);
+    res.render('404');
 });
 
-io.on('connection', function (socket) {
-    socket.emit('news', {hello: 'world'});
-    socket.on('my other event', function (data) {
-        console.log('io connection: %s', data);
-    });
+// This will handle 500 requests.
+app.use(function (error, req, res, next) {
+    res.status(500);
+    res.render('503');
 });
 
 /**
@@ -202,6 +218,14 @@ io.on('connection', function (socket) {
 app.listen(app.get('port'), () => {
     console.log('%s App is running at http://localhost:%d in %s mode', chalk.green('✓'), app.get('port'), app.get('env'));
     console.log('  Press CTRL-C to stop\n');
+});
+
+//Socket IO connection
+io.on('connection', function (socket) {
+    socket.emit('news', {hello: 'world'});
+    socket.on('my other event', function (data) {
+        console.log(data);
+    });
 });
 
 module.exports = app;
