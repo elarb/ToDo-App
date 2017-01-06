@@ -3,6 +3,7 @@ extends layout
 block css
     link(rel='stylesheet', href='/css/main.css')
 
+
 block content
     .container
         .panel
@@ -25,9 +26,11 @@ block content
                             textarea.form-control(name='message', id='message', rows='7')
                     .form-group
                         .col-sm-offset-2.col-sm-8
-                            .g-recaptcha(data-sitekey='== Your site Key ==')
+                            .g-recaptcha(data-sitekey="6LdC5RAUAAAAADSqy-lNxRwkMXIATd15AWHZkzfg")
                     .form-group
                         .col-sm-offset-2.col-sm-8
                             button.btn.btn-success(type='submit')
                                 i.fa.fa-envelope
                                 |  Send
+block scripts
+    script(src='https://www.google.com/recaptcha/api.js')

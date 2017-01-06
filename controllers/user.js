@@ -4,6 +4,12 @@ const nodemailer = require('nodemailer');
 const passport = require('passport');
 const User = require('../models/User');
 const zxcvbn = require('zxcvbn');
+const reCAPTCHA = require('recaptcha2');
+
+const recaptcha = new reCAPTCHA({
+    siteKey: process.env.RECAPTCHA_KEY,
+    secretKey: process.env.RECAPTCHA_SECRET
+});
 
 /**
  * Login Required middleware.
@@ -119,22 +125,30 @@ exports.postSignup = (req, res, next) => {
         return res.render('account/signup', {email: req.body.email});
     }
 
-    new User({
-        Email: req.body.email,
-        Password: req.body.password
-    }).save()
-        .then(function (user) {
-            req.logIn(user, function (err) {
-                res.redirect('/dashboard');
-            });
+    recaptcha.validateRequest(req)
+        .then(function () {
+            new User({
+                Email: req.body.email,
+                Password: req.body.password
+            }).save()
+                .then(function (user) {
+                    req.logIn(user, function (err) {
+                        res.redirect('/dashboard');
+                    });
+                })
+                .catch(function (err) {
+                    console.log(err);
+                    if (err.code === 'ER_DUP_ENTRY' || err.code === '23505') {
+                        req.flash('error', {msg: 'The email-address you have entered is already associated with another account.'});
+                        return res.redirect('/signup');
+                    }
+                });
         })
-        .catch(function (err) {
-            console.log(err);
-            if (err.code === 'ER_DUP_ENTRY' || err.code === '23505') {
-                req.flash('error', {msg: 'The email-address you have entered is already associated with another account.'});
-                return res.redirect('/signup');
-            }
+        .catch(function (errorCodes) {
+            req.flash('errors', {msg: 'Please make sure to verify the captcha'});
+            return res.render('account/signup', {email: req.body.email});
         });
+
 };
 
 /**

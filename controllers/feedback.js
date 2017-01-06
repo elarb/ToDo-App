@@ -1,6 +1,13 @@
 const async = require('async');
 const nodemailer = require('nodemailer');
 const User = require('../models/User');
+const reCAPTCHA = require('recaptcha2');
+const flash = require('express-flash');
+
+const recaptcha = new reCAPTCHA({
+    siteKey: process.env.RECAPTCHA_KEY,
+    secretKey: process.env.RECAPTCHA_SECRET
+});
 
 const transporter = nodemailer.createTransport({
     service: 'SendGrid',
@@ -25,12 +32,12 @@ exports.getFeedback = (req, res) => {
  * Send a feedback form via Nodemailer.
  */
 exports.postFeedback = (req, res) => {
+
     req.assert('name', 'Name cannot be blank').notEmpty();
     req.assert('email', 'Email is not valid').isEmail();
     req.assert('message', 'Message cannot be blank').notEmpty();
 
     const errors = req.validationErrors();
-
     if (errors) {
         req.flash('errors', errors);
         return res.redirect('/feedback');
@@ -82,14 +89,25 @@ exports.postFeedback = (req, res) => {
         text: req.body.message
     };
 
-    transporter.sendMail(mailOptions, (err) => {
-        if (err) {
-            req.flash('errors', {msg: err.message});
-            return res.redirect('/feedback');
-        }
-        req.flash('success', {msg: 'Email has been sent successfully!'});
-        res.redirect('/');
-    });
-
+    recaptcha.validateRequest(req)
+        .then(function () {
+            transporter.sendMail(mailOptions, (err) => {
+                if (err) {
+                    req.flash('errors', {msg: err.message});
+                    return res.redirect('/feedback');
+                }
+                req.flash('success', {msg: 'Email has been sent successfully!'});
+                res.redirect('/');
+            });
+        })
+        .catch(function (errorCodes) {
+            req.flash('errors', {msg: 'Please make sure to verify the Captcha'});
+            res.redirect('/feedback');
+            // res.render('feedback', {
+            //     title: 'Feedback',
+            //     email: req.body.email,
+            //     message: req.body.message,
+            //     name: req.body.name
+            // });
+        });
 };
-
