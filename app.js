@@ -48,7 +48,7 @@ const passportConfig = require('./config/passport');
  */
 const app = express();
 
-const io = require('socket.io')(4000);
+// const io = require('socket.io')(4000);
 
 /**
  * Express configuration.
@@ -221,11 +221,11 @@ app.listen(app.get('port'), () => {
 });
 
 //Socket IO connection
-io.on('connection', function (socket) {
-    socket.emit('news', {hello: 'world'});
-    socket.on('my other event', function (data) {
-        console.log(data);
-    });
-});
+// io.on('connection', function (socket) {
+//     socket.emit('news', {hello: 'world'});
+//     socket.on('my other event', function (data) {
+//         console.log(data);
+//     });
+// });
 
 module.exports = app;
