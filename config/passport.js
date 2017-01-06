@@ -103,7 +103,7 @@ passport.use(new FacebookStrategy({
                         user.set('Name', profile.name.givenName + ' ' + profile.name.familyName);
                         user.set('Email', profile._json.email);
                         user.set('Gender', profile._json.gender);
-                        //TODO: Add country and regio
+                        //TODO: Add country and region
                         user.set('Picture', 'https://graph.facebook.com/' + profile.id + '/picture?type=large');
                         user.set('Facebook', profile.id);
                         user.save().then(function (user) {
@@ -133,7 +133,7 @@ passport.use(new TwitterStrategy({
                     .fetch()
                     .then(function (user) {
                         user.set('Name', user.get('Name') || profile.displayName);
-                        //TODO: Add Country and Regio
+                        //TODO: Add Country and Region
                         user.set('Picture', user.get('Picture') || profile._json.profile_image_url_https);
                         user.set('Twitter', profile.id);
                         user.save(user.changed, {patch: true}).then(function () {
@@ -233,7 +233,7 @@ exports.isAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {
         return next();
     }
-    req.flash('errors', {msg: 'Login Required to access that.'});
+    req.flash('errors', {msg: 'Please log in first.'});
     res.redirect('/login');
 };
 
