@@ -35,9 +35,9 @@ describe('GET /feedback', () => {
 });
 
 describe('GET /random-url', () => {
-  it('should return 404', (done) => {
+  it('should return 400', (done) => {
     request(app)
       .get('/reset')
-      .expect(404, done);
+      .expect(400, done);
   });
 });
