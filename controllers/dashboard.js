@@ -1,45 +1,17 @@
 const mysql = require('mysql');
 const User = require('../models/User');
 const chalk = require('chalk');
+const knex = require('knex')({
+    client: 'mysql',
+    connection: {
+        host: process.env.DB_HOST,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_NAME
+    },
+    pool: {min: 0, max: 7}
+});
 
-/**
- * Connect to MySQL.
- */
-const db_config = {
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    dateStrings: 'DATE'
-};
-
-let connection;
-
-/**
- * Handle disconnect errors
- */
-function handleDisconnect() {
-    connection = mysql.createConnection(db_config); // Recreate the connection, since
-                                                    // the old one cannot be reused.
-
-    connection.connect(function (err) {              // The server is either down
-        if (err) {                                     // or restarting (takes a while sometimes).
-            console.log('error when connecting to db:', err);
-            setTimeout(handleDisconnect, 2000); // We introduce a delay before attempting to reconnect,
-        }                                     // to avoid a hot loop, and to allow our node script to
-    });                                     // process asynchronous requests in the meantime.
-                                            // If you're also serving http, display a 503 error.
-    connection.on('error', function (err) {
-        console.log('db error', err);
-        if (err.code === 'PROTOCOL_CONNECTION_LOST') { // Connection to the MySQL server is usually
-            handleDisconnect();                         // lost due to either server restart, or a
-        } else {                                      // connnection idle timeout (the wait_timeout
-            throw err;                                  // server variable configures this)
-        }
-    });
-}
-
-handleDisconnect();
 
 /**
  * GET /
@@ -56,17 +28,16 @@ exports.index = (req, res) => {
  *  Get Todos from the database
  */
 exports.getTodos = (req, res) => {
-    connection.query('SELECT * FROM todoitems WHERE userid = ?', req.user.id, (err, rows) => {
-        if (err) {
-            console.error(err);
-            return;
-        }
+    knex.select().from('todoitems').where('userid', req.user.id).then(function (rows) {
         let data = [];
         for (let i = 0; i < rows.length; i++) {
             data.push(rows[i]);
         }
         res.send(data);
+    }).catch(function (err) {
+        console.error(err);
     });
+
 };
 
 /**
@@ -76,11 +47,18 @@ exports.getTodos = (req, res) => {
 exports.update = (req, res) => {
     let todo = req.body.data;
     let date = new Date(todo.DueDate);
-    // console.log(date.toISOString().slice(0, 19).replace('T', ' '));
-    // todo.DueDate = date.toISOString().slice(0, 19).replace('T', ' ');
-    connection.query('UPDATE todoitems SET Title = ?, DueDate = ?, Completed = ?, Priority = ? WHERE Id = ?',
-        [todo.Title, date, todo.Completed, todo.Priority, todo.id]);
-    res.end();
+    knex('todoitems').where('id', todo.id).update({
+        Title: todo.Title,
+        DueDate: date,
+        Completed: todo.Completed,
+        Priority: todo.Priority
+    }).then(function () {
+        res.end();
+    }).catch(function (err) {
+        console.log(err);
+    });
+
+
 };
 
 /**
@@ -89,8 +67,13 @@ exports.update = (req, res) => {
  */
 exports.delete = (req, res) => {
     let todo = req.body.data;
-    connection.query("DELETE FROM todoitems WHERE id = ?", todo.id);
-    res.end();
+    knex('todoitems')
+        .where('id', todo.id)
+        .del().then(function () {
+        res.end();
+    }).catch(function (err) {
+        console.log(err);
+    });
 };
 
 /**
@@ -102,13 +85,18 @@ exports.addTodo = (req, res) => {
     let date = new Date(todo.DueDate);
     todo.DueDate = date.toISOString().slice(0, 19).replace('T', ' ');
 
-    connection.query('INSERT INTO todoitems SET Title = ?, DueDate = ?, Completed = ?, Priority = ?, UserId = ?',
-        [todo.Title, todo.DueDate, todo.Completed, todo.Priority, req.user.id], (err, result) => {
-            if (err) {
-                console.error(err);
-            }
-            res.status(200).send(result.insertId.toString());
-        });
+    knex.insert({
+        Title: todo.Title,
+        DueDate: todo.DueDate,
+        Completed: todo.Completed,
+        Priority: todo.Priority,
+        UserId: req.user.id
+    })
+        .returning('id')
+        .into('todoitems')
+        .then(function (id) {
+            res.status(200).send(id.toString());
+        }).catch(function (error) {
+        console.log(error);
+    });
 };
-
-//TODO: Add custom theme functionality with the use of cookies
