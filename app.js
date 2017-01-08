@@ -11,9 +11,14 @@ const logger = require('morgan');
 const chalk = require('chalk');
 const errorHandler = require('errorhandler');
 const lusca = require('lusca');
-// const dotenv = require('dotenv');
+const dotenv = require('dotenv');
+const MongoStore = require('connect-mongo')(session);
 const flash = require('express-flash');
 const path = require('path');
+const ExpressBrute = require('express-brute');
+const MongooseStore = require('express-brute-mongoose');
+const bruteForceSchema = require('express-brute-mongoose/dist/schema');
+const mongoose = require('mongoose');
 const passport = require('passport');
 const expressValidator = require('express-validator');
 const expressStatusMonitor = require('express-status-monitor');
@@ -21,7 +26,6 @@ const sass = require('node-sass-middleware');
 const multer = require('multer');
 const levenshtein = require('fast-levenshtein');
 const cool = require('cool-ascii-faces');
-
 
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
@@ -48,7 +52,22 @@ const passportConfig = require('./config/passport');
  */
 const app = express();
 
-// const io = require('socket.io')(4000);
+/**
+ * Connect to MongoDB.
+ */
+mongoose.Promise = global.Promise;
+mongoose.connect(process.env.MONGOLAB_URI);
+mongoose.connection.on('error', () => {
+    console.log('%s MongoDB connection error. Please make sure MongoDB is running.', chalk.red('✗'));
+    process.exit();
+});
+
+/**
+ * Brute force stores
+ */
+const model = mongoose.model('bruteforce', bruteForceSchema);
+const store = new MongooseStore(model);
+const bruteforce = new ExpressBrute(store);
 
 /**
  * Express configuration.
@@ -70,9 +89,13 @@ app.use(bodyParser.urlencoded({
 app.use(expressValidator());
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(session({
-    resave: true,
-    saveUninitialized: true,
+    resave: false,
+    saveUninitialized: false,
     secret: process.env.SESSION_SECRET,
+    store: new MongoStore({
+        url: process.env.MONGOLAB_URI,
+        autoReconnect: true
+    })
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -121,7 +144,7 @@ app.use(express.static(path.join(__dirname, 'public'), {
 app.get('/', homeController.index);
 app.get('/login', userController.getLogin);
 app.get('^(\/login|\/logn)([a-zA-Z])+', userController.getLogin);
-app.post('/login', userController.postLogin);
+app.post('/login', bruteforce.prevent, userController.postLogin);
 app.get('/logout', userController.logout);
 app.get('/forgot', userController.getForgot);
 app.post('/forgot', userController.postForgot);
@@ -219,13 +242,5 @@ app.listen(app.get('port'), () => {
     console.log('%s App is running at http://localhost:%d in %s mode', chalk.green('✓'), app.get('port'), app.get('env'));
     console.log('  Press CTRL-C to stop\n');
 });
-
-//Socket IO connection
-// io.on('connection', function (socket) {
-//     socket.emit('news', {hello: 'world'});
-//     socket.on('my other event', function (data) {
-//         console.log(data);
-//     });
-// });
 
 module.exports = app;
