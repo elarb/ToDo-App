@@ -6,7 +6,7 @@
 
 To Do
 =======================
-[![Build Status](https://travis-ci.com/elarb/ToDo-App.svg?token=T3DvYLyn6TfxmknUsrTx&branch=master)](https://travis-ci.com/elarb/ToDo-App) [![Dependency Status](https://david-dm.org/elarb/ToDo-App.svg)](https://david-dm.org/elarb/ToDo-App) 
+[![Build Status](https://travis-ci.com/elarb/ToDo-App.svg?token=T3DvYLyn6TfxmknUsrTx&branch=master)](https://travis-ci.com/elarb/ToDo-App) 
 
 A To-Do Web App targeted at Children.
 
