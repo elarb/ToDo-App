@@ -182,6 +182,18 @@ app.get('/cool', function (request, response) {
     response.send(cool());
 });
 
+// This will handle 404 requests.
+app.use(function (req, res) {
+    res.status(400);
+    res.render('404');
+});
+
+// This will handle 500 requests.
+app.use(function (error, req, res, next) {
+    res.status(500);
+    res.render('503');
+});
+
 /**
  * Dashboard routes levenshtein
  */
@@ -200,17 +212,6 @@ if (app.get('env') === 'production') {
     });
 }
 
-// This will handle 404 requests.
-app.use(function (req, res) {
-    res.status(400);
-    res.render('404');
-});
-
-// This will handle 500 requests.
-app.use(function (error, req, res, next) {
-    res.status(500);
-    res.render('503');
-});
 
 /**
  * Start Express server.
