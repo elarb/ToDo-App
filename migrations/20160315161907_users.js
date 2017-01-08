@@ -30,7 +30,7 @@ exports.up = function (knex, Promise) {
                 table.boolean('Completed');
                 table.date('CompletionDate');
                 table.timestamps();
-                table.integer('UserID').unsigned().index().references('id').inTable('Users').onDelete('CASCADE');
+                table.integer('UserID').unsigned().index().references('id').inTable('users').onDelete('CASCADE');
             }
         )
     ]);
