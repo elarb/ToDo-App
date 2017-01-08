@@ -1,24 +1,24 @@
-var main = function (data) {
+const main = function (data) {
     "use strict";
 
     // FIELDS
-    var todosperweek = [];
-    var $todosperweekbutton = $(".todosperweekinput");
+    let todosperweek = [];
+    const $todosperweekbutton = $(".todosperweekinput");
 
 
     $todosperweekbutton.on('click', function (event) {
         $(".tododiv").remove();
         $.get("/todosperweek", function (data) {
-            var $todosperweek = $("<div>");
+            const $todosperweek = $("<div>");
             $todosperweek.addClass('todosperweek');
             data.forEach(function (object) {
-                var $week = $("<label>");
-                var $count = $("<label>");
+                const $week = $("<label>");
+                const $count = $("<label>");
 
                 $week.text(object.Week);
                 $count.text(object.Count);
 
-                var $tododiv = $("<div>");
+                const $tododiv = $("<div>");
                 $tododiv.addClass("tododiv");
                 $tododiv.append($week);
                 $tododiv.append($count);

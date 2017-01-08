@@ -30,14 +30,14 @@ let main = (data) => {
         }
     }
 
-    // Update the todoitem in the SQL DB
+    // Update the todoitem
     let updateTodo = (TodoItem) => {
         $.post("/updatetodo", {
             "data": TodoItem
         });
     };
 
-    // Deletes the todoitem from SQL DB
+    // Deletes the todoitem
     let deleteTodo = (TodoItem) => {
         $.post("/deletetodo", {
             "data": TodoItem
@@ -281,11 +281,6 @@ let main = (data) => {
     })();
 };
 
-// const socket = io.connect('http://localhost:4000');
-// socket.on('news', function (data) {
-//     console.log(data);
-//     socket.emit('my other event', {my: 'data'});
-// });
 
 $(document).ready(function () {
     $.get("/gettodos", function (data) {
