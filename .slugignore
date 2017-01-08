@@ -1,1 +1,5 @@
 yarn.lock
+*.md
+/test
+LICENSE
+.travis.yml
