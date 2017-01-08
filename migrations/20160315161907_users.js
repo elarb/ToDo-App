@@ -1,6 +1,6 @@
 exports.up = function (knex, Promise) {
     return Promise.all([
-        knex.schema.createTableIfNotExists ('Users', function (table) {
+        knex.schema.createTableIfNotExists('users', function (table) {
                 table.increments();
                 table.string('Email').unique();
                 table.string('Name');
@@ -21,7 +21,7 @@ exports.up = function (knex, Promise) {
         //
         //     }
         // ),
-        knex.schema.createTableIfNotExists ('TodoItems', function (table) {
+        knex.schema.createTableIfNotExists('todoitems', function (table) {
                 table.increments();
                 table.string('Title');
                 table.string('Description');
