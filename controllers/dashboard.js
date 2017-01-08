@@ -56,7 +56,7 @@ exports.index = (req, res) => {
  *  Get Todos from the database
  */
 exports.getTodos = (req, res) => {
-    mysqlClient.query('SELECT * FROM todoitems WHERE userid = ?', req.user.id, (err, rows) => {
+    connection.query('SELECT * FROM todoitems WHERE userid = ?', req.user.id, (err, rows) => {
         if (err) {
             console.error(err);
             return;
@@ -78,7 +78,7 @@ exports.update = (req, res) => {
     let date = new Date(todo.DueDate);
     // console.log(date.toISOString().slice(0, 19).replace('T', ' '));
     // todo.DueDate = date.toISOString().slice(0, 19).replace('T', ' ');
-    mysqlClient.query('UPDATE todoitems SET Title = ?, DueDate = ?, Completed = ?, Priority = ? WHERE Id = ?',
+    connection.query('UPDATE todoitems SET Title = ?, DueDate = ?, Completed = ?, Priority = ? WHERE Id = ?',
         [todo.Title, date, todo.Completed, todo.Priority, todo.id]);
     res.end();
 };
@@ -89,7 +89,7 @@ exports.update = (req, res) => {
  */
 exports.delete = (req, res) => {
     let todo = req.body.data;
-    mysqlClient.query("DELETE FROM todoitems WHERE id = ?", todo.id);
+    connection.query("DELETE FROM todoitems WHERE id = ?", todo.id);
     res.end();
 };
 
@@ -102,7 +102,7 @@ exports.addTodo = (req, res) => {
     let date = new Date(todo.DueDate);
     todo.DueDate = date.toISOString().slice(0, 19).replace('T', ' ');
 
-    mysqlClient.query('INSERT INTO todoitems SET Title = ?, DueDate = ?, Completed = ?, Priority = ?, UserId = ?',
+    connection.query('INSERT INTO todoitems SET Title = ?, DueDate = ?, Completed = ?, Priority = ?, UserId = ?',
         [todo.Title, todo.DueDate, todo.Completed, todo.Priority, req.user.id], (err, result) => {
             if (err) {
                 console.error(err);
