@@ -1,6 +1,6 @@
-const dotenv = require('dotenv');
-
-dotenv.load();
+// const dotenv = require('dotenv');
+//
+// dotenv.load();
 
 module.exports = {
     client: 'mysql',
