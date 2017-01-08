@@ -26,6 +26,8 @@ Features
 - Sass stylesheets (auto-compiled via middleware)
 - Bootstrap 3 (**Mobile Friendly**)
 - Contact Form powered by Sendgrid
+- MySQL data storage (users + data) using Knex.js and pool connections
+- MongoDB (Mongolab) session storage
 - **Account Management**
     - Gravatar
     - Profile Details
