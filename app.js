@@ -101,7 +101,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
-const csrfExclude = ['/addtodo', '/deletetodo', '/updatetodo', '/gettodos'];
+const csrfExclude = ['/addtodo', '/deletetodo', '/updatetodo', '/gettodos', '/account/reset/picture'];
 app.use((req, res, next) => {
     // CSRF protection.
     if (_.includes(csrfExclude, req.path)) {
