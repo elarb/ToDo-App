@@ -6,6 +6,10 @@ let main = (data) => {
     const $sortDescrButton = $("#sort-button-descr");
     const $datePicker = $("#date-input");
     const today = new Date().toISOString().split('T')[0];
+    const sportKeyWords = ['hockey', 'football', 'basketball', 'rugby', 'ballet', 'dance', 'soccer', 'tennis', 'sprinting', 'volleyball', 'swimming'];
+    const homeWorkKeywords = ['homework', 'math', 'english', 'history', 'physics', 'chemistry', 'assignment', 'chapter', 'book', 'test', 'exam'];
+    const partyKeyWords = ['party', 'birthday'];
+    const musicKeywords = ['guitar', 'drums', 'piano', 'violin', 'bass'];
 
     let toDos = data.map((todo) => {
         return {
@@ -118,6 +122,7 @@ let main = (data) => {
         $todoTextInput.val(todo.Title);
         $todoTextInput.attr({'autocorrect': 'off', 'spellcheck': 'false'});
 
+
         let $todoDateInput = $("<input>").attr("type", "date");
         $todoDateInput.addClass("dateField");
         $todoDateInput.val(todo.DueDate);
@@ -135,6 +140,7 @@ let main = (data) => {
 
         let $content = $("<div>").append($doneButton)
             .append($importanceButton)
+            .append('<i class="todo-icon">')
             .append($todoTextInput)
             .append($todoDateInput)
             .append($todoDateInput)
@@ -250,14 +256,45 @@ let main = (data) => {
         })
     };
 
+    // Adds an icon to the to-do if it matches a certain theme
+    const addIcons = () => {
+        $('.todo-item').children('.descriptionField').each(function () {
+            let that = this;
+            homeWorkKeywords.forEach(function (element) {
+                if ($(that).val().toLowerCase().indexOf(element) != -1) {
+                    $(that).siblings(".todo-icon").addClass("twa twa-books");
+                    $(that).parent().attr('tag', 'homework');
+                }
+            });
+            sportKeyWords.forEach(function (element) {
+                if ($(that).val().toLowerCase().indexOf(element) != -1) {
+                    $(that).siblings(".todo-icon").addClass("twa twa-soccer");
+                    $(that).parent().attr('tag', 'sport');
+                }
+            });
+            partyKeyWords.forEach(function (element) {
+                if ($(that).val().toLowerCase().indexOf(element) != -1) {
+                    $(that).siblings(".todo-icon").addClass("twa twa-balloon");
+                    $(that).parent().attr('tag', 'party');
+                }
+            });
+            musicKeywords.forEach(function (element) {
+                if ($(that).val().toLowerCase().indexOf(element) != -1) {
+                    $(that).siblings(".todo-icon").addClass("twa twa-musical-score");
+                    $(that).parent().attr('tag', 'music');
+                }
+            });
+        });
+    };
+
     //loads all the todos from the toDos array.
     const loadTodos = function () {
         toDos.forEach(function (TodoItem) {
             addTodo(TodoItem);
+            addIcons();
         });
     };
     loadTodos();
-
 
     //Adds the current date to the footer
     (() => {
