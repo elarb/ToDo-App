@@ -35,19 +35,19 @@ Features
     - Forgot Password
     - Reset Password
     - Link multiple OAuth strategies to one account
-    - Delete Account
-- **Protection**
-    - CSRF
+    - Delete Account 
+- :lock: **Security**
+    - CSRF 
     - XSS
     - SQL-injection
     - Anti Cracking / Bots (**Google reCAPTCHA & brute-force prevention**)
    
 Soon:
 --------
-
 - Admin Panel
 - Selecting themes
 - Translation
+- Security improvements (With [OWASP Top 10](https://www.owasp.org/index.php/Top_10_2013-Top_10) in mind)
 
 Prerequisites
 -------------
