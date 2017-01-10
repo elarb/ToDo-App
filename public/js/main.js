@@ -259,28 +259,29 @@ let main = (data) => {
     // Adds an icon to the to-do if it matches a certain theme
     const addIcons = () => {
         $('.todo-item').children('.descriptionField').each(function () {
+            $(this).siblings(".todo-icon").addClass("twa twa-memo");
             let that = this;
             homeWorkKeywords.forEach(function (element) {
                 if ($(that).val().toLowerCase().indexOf(element) != -1) {
-                    $(that).siblings(".todo-icon").addClass("twa twa-books");
+                    $(that).siblings(".todo-icon").removeClass("twa-memo").addClass("twa-books");
                     $(that).parent().attr('tag', 'homework');
                 }
             });
             sportKeyWords.forEach(function (element) {
                 if ($(that).val().toLowerCase().indexOf(element) != -1) {
-                    $(that).siblings(".todo-icon").addClass("twa twa-soccer");
+                    $(that).siblings(".todo-icon").removeClass("twa-memo").addClass("twa-soccer");
                     $(that).parent().attr('tag', 'sport');
                 }
             });
             partyKeyWords.forEach(function (element) {
                 if ($(that).val().toLowerCase().indexOf(element) != -1) {
-                    $(that).siblings(".todo-icon").addClass("twa twa-balloon");
+                    $(that).siblings(".todo-icon").removeClass("twa-memo").addClass("twa-balloon");
                     $(that).parent().attr('tag', 'party');
                 }
             });
             musicKeywords.forEach(function (element) {
                 if ($(that).val().toLowerCase().indexOf(element) != -1) {
-                    $(that).siblings(".todo-icon").addClass("twa twa-musical-score");
+                    $(that).siblings(".todo-icon").removeClass("twa-memo").addClass("twa-musical-score");
                     $(that).parent().attr('tag', 'music');
                 }
             });
