@@ -32,6 +32,27 @@ body {
   color: #bb3333;
 }
 
+.doneButton {
+  text-align: center;
+  padding-top: 5px;
+  cursor: pointer;
+  font-size: 15px;
+  outline: none;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 9px #95a5a6;
+}
+
+.doneButton:hover {
+  background-color: #778899;
+}
+
+.doneButton:active {
+  background-color: #778899;
+  box-shadow: 0 5px #95a5a6;
+  transform: translateY(4px);
+}
+
 .importanceButton[important="2"] {
   color: deepskyblue;
 }
@@ -54,9 +75,10 @@ body {
 
   .descriptionField {
     min-width: 40%;
+    margin-left: 60px;
   }
 
-  button {
+  button:not(.doneButton) {
     background-color: inherit;
     outline: none;
     border: none;
@@ -68,4 +90,3 @@ body {
   outline: none;
   border: none;
 }
-
