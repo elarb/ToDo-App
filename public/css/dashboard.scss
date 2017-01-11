@@ -69,13 +69,17 @@ body {
   background-color: inherit;
 }
 
+.todo-icon {
+  margin-left: 50px;
+}
+
 .content * {
   margin-left: 15px;
   margin-top: 5px;
 
   .descriptionField {
-    min-width: 40%;
-    margin-left: 60px;
+    min-width: 38%;
+    font-weight: bold;
   }
 
   button:not(.doneButton) {
