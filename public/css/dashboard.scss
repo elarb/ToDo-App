@@ -69,13 +69,13 @@ body {
   background-color: inherit;
 }
 
-.todo-icon {
-  margin-left: 50px;
-}
-
 .content * {
   margin-left: 15px;
   margin-top: 5px;
+
+  .todo-icon {
+    margin-left: 50px;
+  }
 
   .descriptionField {
     min-width: 38%;
