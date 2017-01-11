@@ -4,6 +4,7 @@ let main = (data) => {
     const $inputButton = $("#add-button");
     const $sortDateButton = $("#sort-button-date");
     const $sortDescrButton = $("#sort-button-descr");
+    const $sortPriorityButton = $("#sort-button-priority");
     const $datePicker = $("#date-input");
     const today = new Date().toISOString().split('T')[0];
     const sportKeyWords = ['hockey', 'football', 'basketball', 'rugby', 'ballet', 'dance', 'soccer', 'tennis', 'sprinting', 'volleyball', 'swimming'];
@@ -233,6 +234,21 @@ let main = (data) => {
 
         toDos.sort((a, b) => {
             if (a.Title < b.Title) {
+                return -1;
+            }
+            return 1;
+        });
+        updateAllTodos();
+        loadTodos();
+    });
+
+    //sort by priority
+    $sortPriorityButton.on("click", () => {
+        toDos.forEach(function (TodoItem) {
+            $('#' + TodoItem.id).remove();
+        });
+        toDos.sort((a, b) => {
+            if (b.Priority < a.Priority) {
                 return -1;
             }
             return 1;
