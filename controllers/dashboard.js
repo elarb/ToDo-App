@@ -18,6 +18,14 @@ const knex = require('knex')({
  * Dashboard.
  */
 exports.index = (req, res) => {
+    const cookie = req.cookies.bgcolor;
+    if (cookie === undefined) {
+        res.cookie('bgcolor', '#49b3ff', {
+            maxAge: 30 * 24 * 60 * 60 * 1000,
+            Domain: 'localhost:3000',
+            Path: '/dashboard'
+        });
+    }
     res.render('dashboard', {
         title: 'Dashboard'
     });
