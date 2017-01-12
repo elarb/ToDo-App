@@ -136,8 +136,7 @@ let main = (data) => {
         }
 
         let $deleteButton = $("<button>").addClass("deleteButton");
-        $deleteButton.addClass("fa fa-times");
-        $deleteButton.css('color', 'red');
+        $deleteButton.addClass("fa fa-trash");
 
         let $content = $("<div>").append($doneButton)
             .append($importanceButton)
@@ -255,6 +254,23 @@ let main = (data) => {
         });
         updateAllTodos();
         loadTodos();
+    });
+
+    $('.bgbuttons button').on('click', function () {
+        switch (this.id) {
+            case 'bluebg':
+                Cookies.set('bgcolor', '#49b3ff', {expires: 30});
+                break;
+            case 'greenbg':
+                Cookies.set('bgcolor', '#9abf7f', {expires: 30});
+                break;
+            case 'redbg':
+                Cookies.set('bgcolor', '#fa5a5a', {expires: 30});
+                break;
+            case 'purplebg':
+                Cookies.set('bgcolor', '#cb99c5', {expires: 30});
+                break;
+        }
     });
 
     // removes the to-do from the list and adds it again with the updated state
