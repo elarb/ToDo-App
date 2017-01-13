@@ -376,7 +376,7 @@ exports.postReset = (req, res, next) => {
             const mailOptions = {
                 to: user.Email,
                 from: process.env.PERSONAL_MAIL,
-                subject: 'Your To Do password has been changed',
+                subject: 'Your ToDoable password has been changed',
                 text: `Hello,\n\nThis is a confirmation that the password for your account has just been changed.\n`
             };
             transporter.sendMail(mailOptions, (err) => {
@@ -454,7 +454,7 @@ exports.postForgot = (req, res, next) => {
             const mailOptions = {
                 to: user.Email,
                 from: process.env.PERSONAL_MAIL,
-                subject: '✔ Reset your password on To Do',
+                subject: '✔ Reset your password on ToDoable',
                 text: `You are receiving this email because a reset of the password for your account has been requested.\n\n
           Please click on the following link, or paste this into your browser to complete the process:\n\n
           http://${req.headers.host}/reset/${token}\n\n

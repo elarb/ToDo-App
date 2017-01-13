@@ -1,10 +1,10 @@
 {
-  "name": "To Do",
-  "short_name": "To Do",
+  "name": "ToDoable",
+  "short_name": "ToDoable",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#6b92b9",
-  "description": "To Do App for Children",
+  "description": "Child Friendly To Do App",
   "icons": [
     {
       "src": "\/img/android-icon-36x36.png",

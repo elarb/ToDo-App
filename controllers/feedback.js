@@ -85,7 +85,7 @@ exports.postFeedback = (req, res) => {
     const mailOptions = {
         to: process.env.PERSONAL_MAIL,
         from: `${req.body.name} <${req.body.email}>`,
-        subject: 'Feedback Form | To Do App',
+        subject: 'Feedback Form | ToDoable',
         text: req.body.message
     };
 

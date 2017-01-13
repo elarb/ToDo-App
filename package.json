@@ -1,7 +1,7 @@
 {
-  "name": "todo-app",
+  "name": "ToDoable",
   "version": "1.0.0",
-  "description": "A ToDo Application for Children",
+  "description": "A Child friendly ToDo Application",
   "repository": {
     "type": "git",
     "url": "https://github.com/elarb/ToDo-App/"
