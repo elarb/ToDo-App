@@ -94,7 +94,9 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     store: new MongoStore({
         url: process.env.MONGOLAB_URI,
-        autoReconnect: true
+        autoReconnect: true,
+        autoRemove: 'interval',
+        autoRemoveInterval: 3600
     })
 }));
 app.use(passport.initialize());
