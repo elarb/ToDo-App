@@ -223,7 +223,7 @@ let main = (data) => {
         });
 
         toDos.sort((a, b) => {
-            if (a.DueDate < b.DueDate) {
+            if (a.DueDate > b.DueDate) {
                 return -1;
             }
             return 1;
