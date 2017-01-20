@@ -1,6 +1,7 @@
 let main = (data) => {
 
     // FIELDS
+    const $body = $('body');
     const $inputButton = $("#add-button");
     const $sortDateButton = $("#sort-button-date");
     const $sortDescrButton = $("#sort-button-descr");
@@ -11,6 +12,12 @@ let main = (data) => {
     const homeWorkKeywords = ['homework', 'math', 'english', 'history', 'physics', 'chemistry', 'assignment', 'chapter', 'book', 'test', 'exam'];
     const partyKeyWords = ['party', 'birthday'];
     const musicKeywords = ['guitar', 'drums', 'piano', 'violin', 'bass'];
+
+    let loadbg = () => {
+        let bgcolor = Cookies.get('bgcolor');
+        $body.css('background-color', bgcolor);
+    };
+    loadbg();
 
     let toDos = data.map((todo) => {
         return {
@@ -271,6 +278,7 @@ let main = (data) => {
                 Cookies.set('bgcolor', '#cb99c5', {expires: 30});
                 break;
         }
+        loadbg();
     });
 
     // removes the to-do from the list and adds it again with the updated state
