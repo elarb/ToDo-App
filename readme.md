@@ -28,6 +28,7 @@ Features
 - Contact Form powered by Sendgrid
 - MySQL data storage (users + data) using Knex.js and pool connections
 - MongoDB (Mongolab) session storage
+- Selecting themes
 - **Account Management**
     - Gravatar
     - Profile Details
@@ -45,7 +46,6 @@ Features
 Soon:
 --------
 - Admin Panel
-- Selecting themes
 - Translation
 - Security improvements (With [OWASP Top 10](https://www.owasp.org/index.php/Top_10_2013-Top_10) in mind)
 
