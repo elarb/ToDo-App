@@ -4,7 +4,7 @@
 
 ![](http://i.imgur.com/qN2wDCN.png)
 
-To Do
+ToDoable
 =======================
 [![Build Status](https://travis-ci.com/elarb/ToDo-App.svg?token=T3DvYLyn6TfxmknUsrTx&branch=master)](https://travis-ci.com/elarb/ToDo-App) 
 
