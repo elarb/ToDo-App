@@ -10,7 +10,7 @@ To Do
 
 A To-Do Web App targeted at Children.
 
-**Live Demo**: https://elar.herokuapp.com
+**Live Demo**: -
 
 Features
 --------
