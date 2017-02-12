@@ -8,6 +8,8 @@ ToDoable
 =======================
 [![Build Status](https://travis-ci.com/elarb/ToDo-App.svg?token=T3DvYLyn6TfxmknUsrTx&branch=master)](https://travis-ci.com/elarb/ToDo-App) 
 
+TU Delft TI1506 (Web & Database Technology) Course Project '17
+
 A To-Do Web App.
 
 **Live Demo**: https://to-doable.herokuapp.com
