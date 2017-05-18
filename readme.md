@@ -12,7 +12,7 @@ TU Delft TI1506 (Web & Database Technology) Course Project '17
 
 A To-Do Web App.
 
-**Live Demo**: https://to-doable.herokuapp.com
+:zap: **Live Demo**: https://to-doable.herokuapp.com
 
 Features
 --------
