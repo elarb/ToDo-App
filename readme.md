@@ -18,27 +18,27 @@ Features
 --------
 
 
-- **Local Authentication** using Email and Password
-- **OAuth 1.0a Authentication** via Twitter
-- **OAuth 2.0 Authentication** via Facebook, Google
-- Password strength check using Dropbox [zxcvbn](https://github.com/dropbox/zxcvbn)
-- Flash notifications
-- MVC Project Structure
-- Templating using Pug (ex-Jade)
-- Sass stylesheets (auto-compiled via middleware)
-- Bootstrap 3 (**Mobile Friendly**)
-- Contact Form powered by Sendgrid
-- MySQL data storage (users + data) using Knex.js and pool connections
-- MongoDB (Mongolab) session storage
-- Selecting themes
-- **Account Management**
+:white_check_mark: **Local Authentication** using Email and Password	    
+:white_check_mark: **OAuth 1.0a Authentication** via Twitter	    
+:white_check_mark: **OAuth 2.0 Authentication** via Facebook, Google	    
+:white_check_mark: Password strength check using Dropbox [zxcvbn](https://github.com/dropbox/zxcvbn)	    
+:white_check_mark: Flash notifications	    
+:white_check_mark: MVC Project Structure	    
+:white_check_mark: Templating using Pug (ex-Jade)	    
+:white_check_mark: Sass stylesheets (auto-compiled via middleware)	    	
+:white_check_mark: Bootstrap 3 (**Mobile Friendly**)		    
+:white_check_mark: Contact Form powered by Sendgrid		    
+:white_check_mark: MySQL data storage (users + data) using Knex.js and pool connections	    	
+:white_check_mark: MongoDB (Mongolab) session storage	    
+:white_check_mark: Selecting themes	    
+-  :computer: **Account Management**
     - Gravatar
     - Profile Details
     - Change Password
     - Forgot Password
     - Reset Password
     - Link multiple OAuth strategies to one account
-    - Delete Account 
+    - Delete Account 	    
 - :lock: **Security**
     - CSRF 
     - XSS
