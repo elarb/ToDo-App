@@ -24,13 +24,13 @@ Features
 :white_check_mark: Password strength check using Dropbox [zxcvbn](https://github.com/dropbox/zxcvbn)	    
 :white_check_mark: Flash notifications	    
 :white_check_mark: MVC Project Structure	    
-:white_check_mark: Templating using Pug (ex-Jade)	    
-:white_check_mark: Sass stylesheets (auto-compiled via middleware)          	
-:white_check_mark: Bootstrap 3 (**Mobile Friendly**)		    
-:white_check_mark: Contact Form powered by Sendgrid		    
-:white_check_mark: MySQL data storage (users + data) using Knex.js and pool connections	        	
-:white_check_mark: MongoDB (Mongolab) session storage	    
-:white_check_mark: Selecting themes	    
+:white_check_mark: Templating using Pug (ex-Jade)	                
+:white_check_mark: Sass stylesheets (auto-compiled via middleware)          	        
+:white_check_mark: Bootstrap 3 (**Mobile Friendly**)		                
+:white_check_mark: Contact Form powered by Sendgrid		            
+:white_check_mark: MySQL data storage (users + data) using Knex.js and pool connections	                      	
+:white_check_mark: MongoDB (Mongolab) session storage	                 
+:white_check_mark: Selecting themes	            
 -  :computer: **Account Management**
     - Gravatar
     - Profile Details
