@@ -60,7 +60,7 @@
     "zxcvbn": "latest"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
+    "chai": "^4.0.2",
     "eslint": "^3.9.1",
     "eslint-config-airbnb-base": "^11.0.1",
     "eslint-plugin-import": "^2.1.0",
