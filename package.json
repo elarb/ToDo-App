@@ -33,7 +33,7 @@
     "express-brute": "^1.0.1",
     "express-brute-mongoose": "1.0.1",
     "express-flash": "^0.0.2",
-    "express-session": "^1.14.2",
+    "express-session": "^1.16.0",
     "express-status-monitor": "^1.0.0",
     "express-validator": "^5.0.0",
     "fast-levenshtein": "^2.0.6",
