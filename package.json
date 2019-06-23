@@ -16,7 +16,7 @@
     "test": "mocha --reporter spec"
   },
   "dependencies": {
-    "async": "^2.1.2",
+    "async": "^3.1.0",
     "bcrypt-nodejs": "^0.0.3",
     "body-parser": "^1.15.2",
     "bookshelf": "^0.13.0",
