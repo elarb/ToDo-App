@@ -27,7 +27,7 @@
     "connect-session-knex": "^1.3.0",
     "cookie-parser": "^1.4.3",
     "cool-ascii-faces": "^1.3.4",
-    "dotenv": "^5.0.0",
+    "dotenv": "^6.0.0",
     "errorhandler": "^1.4.3",
     "express": "^4.14.0",
     "express-brute": "^1.0.1",
@@ -56,18 +56,18 @@
     "pug": "^2.0.0-beta6",
     "recaptcha2": "^1.3.2",
     "request": "^2.78.0",
-    "validator": "^9.0.0",
+    "validator": "^10.0.0",
     "zxcvbn": "latest"
   },
   "devDependencies": {
     "chai": "^4.0.2",
     "eslint": "^5.0.0",
-    "eslint-config-airbnb-base": "^12.0.0",
+    "eslint-config-airbnb-base": "^13.0.0",
     "eslint-plugin-import": "^2.1.0",
     "mocha": "^5.0.0",
-    "sinon": "^5.0.0",
+    "sinon": "^6.0.0",
     "sinon-mongoose": "^2.0.0",
-    "supertest": "^2.0.1"
+    "supertest": "^3.1.0"
   },
   "eslintConfig": {
     "extends": "airbnb-base",
