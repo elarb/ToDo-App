@@ -19,7 +19,7 @@
     "async": "^2.1.2",
     "bcrypt-nodejs": "^0.0.3",
     "body-parser": "^1.15.2",
-    "bookshelf": "^0.14.0",
+    "bookshelf": "^1.0.1",
     "chalk": "^2.0.0",
     "cheerio": "^1.0.0-rc.2",
     "compression": "^1.6.2",
